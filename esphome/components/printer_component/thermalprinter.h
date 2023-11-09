@@ -16,7 +16,7 @@
 #include "Arduino.h"
 #include "esphome/components/uart/uart.h"
 
-class Epson : public Print, public UARTDevice {
+class Epson : public Print, public esphome::uart::UARTDevice {
 public:
   
   Epson(int rxPin, int txPin);
