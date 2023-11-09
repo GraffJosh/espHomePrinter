@@ -20,7 +20,7 @@ void Epson::start(){
   pinMode(this->_txPin, OUTPUT);
   pinMode(this->_rxPin, INPUT);  
   this->_printer = new UARTDevice ();// (this->_rxPin, this->_txPin);
-  this->_printer->begin(9600);
+  // this->_printer->begin(9600);
 }
 
 // query status of printer. when online returns value 22.
