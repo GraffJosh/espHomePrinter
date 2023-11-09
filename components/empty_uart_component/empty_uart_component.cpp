@@ -15,7 +15,7 @@ void EmptyUARTComponent::loop() {
 }
 
 void EmptyUARTComponent::dump_config(){
-    ESP_LOGCONFIG(TAG, "Empty UART component");
+    ESP_LOGCONFIG(TAG, "JPGIndustries UART component");
 }
 
 }  // namespace empty_uart_component
