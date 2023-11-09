@@ -201,5 +201,10 @@ size_t Epson::write(uint8_t c) {
   return 1;
 }
 
+bool Epson::logWrapback(const char* text)
+{
+  ESP_LOGCONFIG(TAG, "wrapback: %s",text);
+}
+
 }
 }
