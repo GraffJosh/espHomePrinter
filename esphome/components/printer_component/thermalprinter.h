@@ -56,6 +56,7 @@ void barcodeNumberPosition(uint8_t n);
 void printBarcode(uint8_t m,uint8_t n);
 void cut();
 
+void logWrapback(const char* text);
 
 private:  
 
