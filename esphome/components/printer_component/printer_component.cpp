@@ -11,7 +11,7 @@ void PrinterComponent::setup() {
 }
 
 void PrinterComponent::loop() {
-    ESP_LOGD("ERROR", "JPG Industries Custom Debug");
+    ESP_LOGD("INFO", "JPG Industries Custom Debug, %d", tx_pin->value());
     delay(500);
 }
 
