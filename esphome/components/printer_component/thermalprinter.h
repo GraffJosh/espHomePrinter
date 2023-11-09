@@ -13,8 +13,8 @@
 #ifndef thermalprinter_h
 #define thermalprinter_h
 
- #include "Arduino.h"
- #include "SoftwareSerial.h"
+#include "Arduino.h"
+#include "esphome/components/uart/uart.h"
 
 class Epson : public Print {
 public:
@@ -56,7 +56,7 @@ private:
   int _rxPin;  
   int _txPin;
   
-  SoftwareSerial * _printer;
+  UARTDevice * _printer;
 
 
 };

@@ -19,7 +19,7 @@ void Epson::start(){
 
   pinMode(this->_txPin, OUTPUT);
   pinMode(this->_rxPin, INPUT);  
-  this->_printer = new SoftwareSerial (this->_rxPin, this->_txPin);
+  this->_printer = new UARTDevice ();// (this->_rxPin, this->_txPin);
   this->_printer->begin(9600);
 }
 
