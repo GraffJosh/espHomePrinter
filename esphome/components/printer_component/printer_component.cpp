@@ -12,7 +12,7 @@ void PrinterComponent::setup() {
 
 void PrinterComponent::loop() {
     ESP_LOGD("ERROR", "JPG Industries Custom Debug");
-    sleep(500);
+    delay(500);
 }
 
 void PrinterComponent::dump_config(){
