@@ -8,6 +8,10 @@
 static const char LF = 0xA; // print buffer and line feed  
     
     
+namespace esphome {
+namespace uart {
+namespace UARTDevice{
+    
 Epson::Epson(int rxPin, int txPin)
 {
   this->_rxPin = rxPin;
@@ -184,3 +188,6 @@ int Epson::getStatus(){
 
 
 
+}
+}
+}
