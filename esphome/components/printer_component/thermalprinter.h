@@ -16,14 +16,14 @@
 #include "Arduino.h"
 #include "esphome/components/uart/uart.h"
 
-class Epson : public Print, public esphome::uart::UARTDevice {
+class Epson : public Print {
 public:
   
   Epson(int rxPin, int txPin);
   
 
-// size_t write(uint8_t c);
-// int read();
+size_t write(uint8_t c);
+int read();
 
 
 void start();
@@ -56,6 +56,8 @@ private:
   int _rxPin;  
   int _txPin;
   
+  esphome::uart::UARTDevice * _printer;
+
 
 };
 
