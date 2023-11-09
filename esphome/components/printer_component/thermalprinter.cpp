@@ -9,7 +9,7 @@ static const char LF = 0xA; // print buffer and line feed
     
     
 namespace esphome {
-namespace printer_component {
+namespace thermalprinter {
 Epson::Epson()
 {
   // this->_rxPin = rxPin;
