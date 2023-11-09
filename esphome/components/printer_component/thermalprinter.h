@@ -19,6 +19,7 @@
 
 namespace esphome {
 namespace printer_component {
+  
 class Epson : public Print, public Component {
 public:
   

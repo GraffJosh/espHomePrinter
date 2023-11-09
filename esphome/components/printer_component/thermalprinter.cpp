@@ -8,6 +8,8 @@
 static const char LF = 0xA; // print buffer and line feed  
     
     
+namespace esphome {
+namespace printer_component {
 Epson::Epson()
 {
   this->_rxPin = rxPin;
@@ -195,3 +197,4 @@ size_t Epson::write(uint8_t c) {
 
 
 
+}}
