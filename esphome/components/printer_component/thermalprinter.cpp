@@ -10,6 +10,9 @@ static const char LF = 0xA; // print buffer and line feed
     
 namespace esphome {
 namespace thermalprinter {
+
+  
+static const char *TAG = "printer_component.component";
 Epson::Epson()
 {
   // this->_rxPin = rxPin;
@@ -17,6 +20,9 @@ Epson::Epson()
   this->start();
 }
 
+void PrinterComponent::dump_config(){
+    ESP_LOGCONFIG(TAG, "JPGIndustries Printer component");
+}
 void Epson::start(){
 
   // pinMode(this->_txPin, OUTPUT);

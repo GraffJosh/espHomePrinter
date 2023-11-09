@@ -29,6 +29,7 @@ public:
 size_t write(uint8_t c);
 int read();
 
+void dump_config() override;
 
 void start();
 
