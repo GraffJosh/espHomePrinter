@@ -11,12 +11,12 @@ void PrinterComponent::setup() {
 }
 
 void PrinterComponent::loop() {
-    Sleep(5000);
     ESP_LOGD("ERROR", "JPG Industries Custom Debug");
+    Sleep(5);
 }
 
 void PrinterComponent::dump_config(){
-    ESP_LOGCONFIG(TAG, "JPGIndustries UART component");
+    ESP_LOGCONFIG(TAG, "JPGIndustries Printer component");
 }
 
 }  // namespace printer_component
