@@ -56,7 +56,7 @@ private:
   int _rxPin;  
   int _txPin;
   
-  UARTDevice * _printer;
+  uart::UARTDevice * _printer;
 
 
 };
