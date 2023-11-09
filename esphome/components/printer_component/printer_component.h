@@ -2,7 +2,8 @@
 
 #include "esphome/core/component.h"
 #include "esphome/components/uart/uart.h"
-#include "thermalprinter/thermalprinter.cpp"
+#include "test.h"
+#include "thermalprinter/thermalprinter.h"
 
 namespace esphome {
 namespace printer_component {
