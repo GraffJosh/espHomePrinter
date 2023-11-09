@@ -16,7 +16,7 @@
 #include "Arduino.h"
 #include "esphome/components/uart/uart.h"
 
-class Epson : public Print {
+class Epson : public Print : public uart::UARTDevice{
 public:
   
   Epson(int rxPin, int txPin);
@@ -56,8 +56,6 @@ private:
   int _rxPin;  
   int _txPin;
   
-  uart::UARTDevice * _printer;
-
 
 };
 

@@ -17,9 +17,9 @@ Epson::Epson(int rxPin, int txPin)
 
 void Epson::start(){
 
-  pinMode(this->_txPin, OUTPUT);
-  pinMode(this->_rxPin, INPUT);  
-  this->_printer = new UARTDevice ();// (this->_rxPin, this->_txPin);
+  // pinMode(this->_txPin, OUTPUT);
+  // pinMode(this->_rxPin, INPUT);  
+  // this->_printer = new UARTDevice ();// (this->_rxPin, this->_txPin);
   // this->_printer->begin(9600);
 }
 
@@ -29,13 +29,13 @@ int Epson::getStatus(){
   this->write(0x04);  
   this->write(1);
   int result;
-  result = this->_printer->read();
+  result = super->read();
   return result;
 }
 
 int Epson::read(){
     int result;
-    result = this->_printer->read();
+    result = super->read();
     return result;
 }
 
@@ -189,7 +189,7 @@ void Epson::cut() {
 }
 
 size_t Epson::write(uint8_t c) {
-  this->_printer->write(c);
+  super->write(c);
   return 1;
 }
 
