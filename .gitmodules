@@ -1,0 +1,3 @@
+[submodule "esphome/components/printer_component/thermalprinter"]
+	path = esphome/components/printer_component/thermalprinter
+	url = https://github.com/signalwerk/thermalprinter
