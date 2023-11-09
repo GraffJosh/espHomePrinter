@@ -11,7 +11,8 @@ void EmptyUARTComponent::setup() {
 }
 
 void EmptyUARTComponent::loop() {
-
+    Sleep(5000);
+    ESP_LOGD("ERROR", "JPG Industries Custom Debug");
 }
 
 void EmptyUARTComponent::dump_config(){
