@@ -20,7 +20,7 @@
 namespace esphome {
 namespace thermalprinter {
 
-class Epson : public Print, public Component {
+class Epson : public Print, public uart::UARTDevice, public Component {
 public:
   
   Epson();
@@ -57,11 +57,7 @@ void printBarcode(uint8_t m,uint8_t n);
 void cut();
 
 
-private:
-  int _rxPin;  
-  int _txPin;
-  
-  esphome::uart::UARTDevice * _printer;
+private:  
 
 
 };
