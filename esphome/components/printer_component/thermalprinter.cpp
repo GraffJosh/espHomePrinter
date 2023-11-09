@@ -29,13 +29,13 @@ int Epson::getStatus(){
   this->write(0x04);  
   this->write(1);
   int result;
-  result = super->read();
+  result = this->read();
   return result;
 }
 
 int Epson::read(){
     int result;
-    result = super->read();
+    result = this->read();
     return result;
 }
 
@@ -186,11 +186,6 @@ void Epson::cut() {
   this->write('V');
   this->write(66);
   this->write(0xA); // print buffer and line feed
-}
-
-size_t Epson::write(uint8_t c) {
-  super->write(c);
-  return 1;
 }
 
 
