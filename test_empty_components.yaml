@@ -3,8 +3,8 @@
 
 packages:
 
-empty_uart_component:
-  id: empty_uart_component_1
+printer_component:
+  id: printer_component_1
 
 uart:
   tx_pin: D0
