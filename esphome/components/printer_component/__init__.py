@@ -5,8 +5,8 @@ from esphome.const import CONF_ID
 
 DEPENDENCIES = ["uart"]
 
-printer_component_ns = cg.esphome_ns.namespace("printer_component")
-PrinterComponent = printer_component_ns.class_("PrinterComponent", cg.Component, uart.UARTDevice)
+thermalprinter_ns = cg.esphome_ns.namespace("thermalprinter")
+PrinterComponent = thermalprinter_ns.class_("Epson", cg.Component, uart.UARTDevice)
 
 CONFIG_SCHEMA = (
     cv.Schema({cv.GenerateID(): cv.declare_id(PrinterComponent)})

@@ -8,7 +8,7 @@
 static const char LF = 0xA; // print buffer and line feed  
     
     
-Epson::Epson(int rxPin, int txPin)
+Epson::Epson()
 {
   this->_rxPin = rxPin;
   this->_txPin = txPin;
@@ -17,8 +17,8 @@ Epson::Epson(int rxPin, int txPin)
 
 void Epson::start(){
 
-  pinMode(this->_txPin, OUTPUT);
-  pinMode(this->_rxPin, INPUT);  
+  // pinMode(this->_txPin, OUTPUT);
+  // pinMode(this->_rxPin, INPUT);  
   // this->_printer = new SoftwareSerial (this->_rxPin, this->_txPin);
   // this->_printer->begin(9600);
 }

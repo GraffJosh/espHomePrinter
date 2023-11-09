@@ -15,11 +15,14 @@
 
 #include "Arduino.h"
 #include "esphome/components/uart/uart.h"
+#include "esphome/core/component.h"
 
-class Epson : public Print {
+namespace esphome {
+namespace printer_component {
+class Epson : public Print, public Component {
 public:
   
-  Epson(int rxPin, int txPin);
+  Epson();
   
 
 size_t write(uint8_t c);
@@ -62,3 +65,4 @@ private:
 };
 
 #endif
+}}
