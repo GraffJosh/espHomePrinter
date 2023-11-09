@@ -12,8 +12,8 @@ namespace esphome {
 namespace printer_component {
 Epson::Epson()
 {
-  this->_rxPin = rxPin;
-  this->_txPin = txPin;
+  // this->_rxPin = rxPin;
+  // this->_txPin = txPin;
   this->start();
 }
 
@@ -195,6 +195,5 @@ size_t Epson::write(uint8_t c) {
   return 1;
 }
 
-
-
-}}
+}
+}
