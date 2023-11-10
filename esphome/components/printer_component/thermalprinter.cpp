@@ -44,7 +44,7 @@ int Epson::getStatus(){
 
 int Epson::read(){
     int result;
-    result = read();
+    result = uart::UARTDevice::read();
     return result;
 }
 
@@ -198,7 +198,7 @@ void Epson::cut() {
 }
 
 size_t Epson::write(uint8_t c) {
-  write(c);
+  uart::UARTDevice::write(c);
   return 1;
 }
 
