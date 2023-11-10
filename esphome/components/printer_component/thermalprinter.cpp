@@ -22,7 +22,7 @@ Epson::Epson()
 
 void Epson::dump_config(){
     ESP_LOGCONFIG(TAG, "JPGIndustries Printer component");
-    ESP_LOGCONFIG(TAG, self.getStatus());
+    ESP_LOGCONFIG(TAG, getStatus());
 }
 void Epson::start(){
 
