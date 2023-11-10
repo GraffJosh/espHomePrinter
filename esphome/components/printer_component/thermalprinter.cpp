@@ -24,7 +24,7 @@ void Epson::dump_config(){
     ESP_LOGCONFIG(TAG, "JPGIndustries Printer component");
     int result = getStatus();
     char string_buffer[(sizeof(result)) + 1];
-    memcpy(string_buffer, result, sizeof result);
+    memcpy(string_buffer, &result, sizeof(result));
     string_buffer[sizeof(result)] = 0; // Null termination.
     ESP_LOGCONFIG(TAG, string_buffer);
 }
