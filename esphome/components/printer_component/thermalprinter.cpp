@@ -18,6 +18,7 @@ Epson::Epson()
   // this->_rxPin = rxPin;
   // this->_txPin = txPin;
   this->start();
+  this->uart::UARTDevice::setTimeout(2000);
 }
 
 void Epson::dump_config(){
@@ -208,7 +209,7 @@ size_t Epson::write(uint8_t c) {
 
 void Epson::printString(const char* text)
 {
-  // Traverse the string 
+    // Traverse the string 
   for (int i = 0;strlen(text); i++) { 
     // Print current character 
       write(text[i]); 
