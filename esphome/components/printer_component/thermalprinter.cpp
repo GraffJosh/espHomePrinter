@@ -206,6 +206,14 @@ size_t Epson::write(uint8_t c) {
   return 1;
 }
 
+void Epson::printString(const char* text)
+{
+  for(int i=0;i<sizeof(text),i++){
+    write(text[i]);
+  }
+  write(LF);
+}
+
 void Epson::logWrapback(const char* text)
 {
   ESP_LOGCONFIG(TAG, "wrapback: %s",text);
