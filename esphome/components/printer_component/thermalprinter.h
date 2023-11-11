@@ -59,7 +59,7 @@ void printBarcode(uint8_t m,uint8_t n);
 void cut();
 void printString(const char* text);
 void logWrapback(const char* text);
-void printImage(uint8_t** image,int width,int height);
+void printImage(uint8_t* image,int width,int height);
 
 private:  
 

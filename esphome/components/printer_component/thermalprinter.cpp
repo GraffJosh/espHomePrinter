@@ -209,7 +209,7 @@ void Epson::cut() {
 /// <param name='image'>
 /// Image to print.
 /// </param>
-void Epson::printImage(uint8_t** image,int width,int height)
+void Epson::printImage(uint8_t* image,int width,int height)
 {
   
   if (width != 384 || height > 65635) {
@@ -227,7 +227,7 @@ void Epson::printImage(uint8_t** image,int width,int height)
   for (int y = 0; y < height; y++) {
     sleep(20);
     for (int x = 0; x < (width/8); x++) {
-      Epson::write(image[x][y]);
+      Epson::write(image[x + (y*x)]);
     }	
   }
 }
