@@ -209,9 +209,13 @@ void Epson::cut() {
 /// <param name='image'>
 /// Image to print.
 /// </param>
-void Epson::printImage(uint8_t* image,int width,int height)
+void Epson::printImage(const uint8_t* image,int width,int height)
 {
   
+  for (int i=0;i<(width*height);i++)
+  {
+    ESP_LOGD("INFO","%d",image[i]);
+  }
   if (width != 384 || height > 65635) {
     ESP_LOGD("INFO","Image size error width: %d, Height: %d",width,height);
   }
