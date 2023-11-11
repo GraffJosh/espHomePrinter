@@ -55,7 +55,7 @@ int Epson::read(){
     result = Serial1.read();
     return result;
 }
-int Epson::printLogo(){
+void Epson::printLogo(){
   Epson::write(ESC);  
   Epson::write(0x20);
   Epson::write(0x25);    
