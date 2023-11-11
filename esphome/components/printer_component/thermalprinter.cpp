@@ -50,7 +50,7 @@ int Epson::getStatus(){
 
 int Epson::read(){
     int result;
-    result = uart::UARTDevice::read();
+    result = printerSerial.read();
     return result;
 }
 
@@ -208,15 +208,15 @@ size_t Epson::write(uint8_t c) {
   return 1;
 }
 
-void Epson::printString(const char* text)
-{
-    // Traverse the string 
-  for (int i = 0;i<10; i++) { 
-    // Print current character 
-      Epson::write(text[i]); 
-  } 
-  Epson::write(LF);
-}
+// void Epson::printString(const char* text)
+// {
+//     // Traverse the string 
+//   for (int i = 0;i<10; i++) { 
+//     // Print current character 
+//       Epson::write(text[i]); 
+//   } 
+//   Epson::write(LF);
+// }
 
 void Epson::logWrapback(const char* text)
 {
