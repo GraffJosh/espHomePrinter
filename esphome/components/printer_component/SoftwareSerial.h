@@ -22,7 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #ifndef __SoftwareSerial_h
 #define __SoftwareSerial_h
 
-#include "circular_queue/circular_queue.h"
+#include "circular_queue.h"
 #include <Stream.h>
 
 namespace EspSoftwareSerial {
