@@ -48,7 +48,7 @@ int Epson::getStatus(){
 
 int Epson::read(){
     int result;
-    result = uart::UARTDevice::read();
+    result = uart::ESP32ArduinoUARTComponent::read();
     return result;
 }
 
@@ -202,7 +202,7 @@ void Epson::cut() {
 }
 
 size_t Epson::write(uint8_t c) {
-  uart::ESP32ArduinoUARTComponent::write(ASCII_GS, c);
+  uart::ESP32ArduinoUARTComponent::write(c);
   return 1;
 }
 
