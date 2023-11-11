@@ -14,7 +14,7 @@
 #define thermalprinter_h
 
 #include "Arduino.h"
-#include "esphome/components/uart/uart.h"
+// #include "esphome/components/uart/uart.h"
 #include "esphome/core/component.h"
 #include <HardwareSerial.h>
 
