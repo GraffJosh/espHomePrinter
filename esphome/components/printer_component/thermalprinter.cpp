@@ -56,9 +56,9 @@ int Epson::read(){
     return result;
 }
 void Epson::printLogo(){
-  Epson::write(GS);  
+  Epson::write(ESC);  
   Epson::write(0x20);
-  Epson::write(0x25);    
+  Epson::write(0);    
 }
 // Print and feed n lines
 // prints the data in the print buffer and feeds n lines
