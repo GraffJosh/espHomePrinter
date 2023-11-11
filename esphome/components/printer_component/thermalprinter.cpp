@@ -17,8 +17,6 @@ Epson::Epson()
 {
   // this->_rxPin = rxPin;
   // this->_txPin = txPin;
-  EspSoftwareSerial::Config swSerialConfig = EspSoftwareSerial::SWSERIAL_8E1;
-  SerialConfig hwSerialConfig = ::SERIAL_8E1;
 
   this->start();
 }
