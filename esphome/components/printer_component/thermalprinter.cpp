@@ -61,14 +61,14 @@ void Epson::letterSpacing(int spacing){
   Epson::write(spacing);    
 }
 void Epson::printLogo(){
-  GS "(L"   6   0  48  85  "A1"   1 2
   Epson::write(GS);  
   Epson::write("(L");  
   Epson::write(6);  
   Epson::write(0);  
   Epson::write(48);  
   Epson::write(85);  
-  Epson::write("A1");
+  Epson::write(48);  
+  Epson::write(48);
   Epson::write(1);
   Epson::write(2);    
 }
