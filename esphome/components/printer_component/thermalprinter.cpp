@@ -68,7 +68,6 @@ void Epson::feed(){
   this->feed(1);    
 }
 
-
 // Set line spacing
 // sets the line spacing to n/180-inch
 void Epson::lineSpacing(uint8_t n){
@@ -202,6 +201,17 @@ void Epson::cut() {
   Epson::write('V');
   Epson::write(66);
   Epson::write(0xA); // print buffer and line feed
+}
+
+void Epson::speed(int speed)
+{
+    Epson::write(GS);
+    Epson::write(40);
+    Epson::write(75);
+    Epson::write(2);
+    Epson::write(0);
+    Epson::write(50);
+    Epson::write(speed);
 }
 
 size_t Epson::write(uint8_t c) {
