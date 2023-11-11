@@ -202,6 +202,7 @@ void Epson::cut() {
 }
 
 size_t Epson::write(uint8_t c) {
+  ESP_LOGCONFIG(TAG, "int: %d",c);
   uart::UARTDevice::write(c);
   return 1;
 }
