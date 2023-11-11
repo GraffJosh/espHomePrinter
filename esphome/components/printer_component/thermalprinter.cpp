@@ -203,6 +203,34 @@ void Epson::cut() {
   Epson::write(66);
   Epson::write(0xA); // print buffer and line feed
 }
+/// <summary>
+/// Prints the image. The image must be 384px wide.
+/// </summary>
+/// <param name='image'>
+/// Image to print.
+/// </param>
+void Epson::printImage(uint8_t** image,int width,int height)
+{
+  
+  if (width != 384 || height > 65635) {
+    throw(new Exception("Image width must be 384px, height cannot exceed 65635px."));
+  }
+
+  //Print LSB first bitmap
+  Epson::write(18);
+  Epson::write(118);
+  
+  Epson::write((byte)(height & 255)); 	//height LSB
+  Epson::write((byte)(height >> 8)); 	//height MSB
+
+  
+  for (int y = 0; y < height; y++) {
+    sleep(20);
+    for (int x = 0; x < (width/8); x++) {
+      Epson::write(image[x,y]);
+    }	
+  }
+}
 
 void Epson::speed(int inSpeed)
 {
