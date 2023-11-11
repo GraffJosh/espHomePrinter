@@ -15,6 +15,7 @@ namespace thermalprinter {
 static const char *TAG = "printer_component.component";
 Epson::Epson()
 {
+  printerSerial.begin( 8, SERIAL_8N1, 21, 20 );
   // this->_rxPin = rxPin;
   // this->_txPin = txPin;
 
@@ -203,7 +204,7 @@ void Epson::cut() {
 }
 
 size_t Epson::write(uint8_t c) {
-  uart::UARTDevice::write(c);
+  printerSerial.write(c);
   return 1;
 }
 

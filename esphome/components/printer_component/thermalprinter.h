@@ -20,8 +20,8 @@
 
 namespace esphome {
 namespace thermalprinter {
-
-class Epson : public Print, public uart::UARTDevice, public Component {
+// public uart::UARTDevice, 
+class Epson : public Print, public Component {
 public:
   
   Epson();
@@ -61,6 +61,7 @@ void logWrapback(const char* text);
 
 private:  
 
+HardwareSerial printerSerial ( 1 );
 
 };
 
