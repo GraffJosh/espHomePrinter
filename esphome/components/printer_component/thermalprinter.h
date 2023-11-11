@@ -16,7 +16,7 @@
 #include "Arduino.h"
 #include "esphome/components/uart/uart.h"
 #include "esphome/core/component.h"
-#include "SoftwareSerial.h"
+#include <HardwareSerial.h>
 
 namespace esphome {
 namespace thermalprinter {
