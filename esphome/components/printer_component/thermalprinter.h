@@ -9,7 +9,8 @@
                  the GNU General Public License (GPL) Version 3
  * Keywords...:  thermal, micro, receipt, printer, serial, tm-t88, tm88, tmt88, epson
  * ********************************************/
-
+// reference: 
+//https://www.pos.com.au/Help-SP/PrinterCommandsforEscPOSNonGraph.html
 #ifndef thermalprinter_h
 #define thermalprinter_h
 

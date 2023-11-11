@@ -4,7 +4,6 @@
 
 #include "Arduino.h"
 #include "thermalprinter.h"
-
 static const char LF = 0xA; // print buffer and line feed  
 static const char ESC = 0x1B;
 static const char GS = 0x1D;
@@ -64,8 +63,8 @@ void Epson::letterSpacing(int spacing){
 void Epson::printLogo(){
   Epson::write(0x1C);  
   Epson::write(0x70);  
-  Epson::write(0x20);
-  Epson::write(0x25);    
+  Epson::write(0x00);
+  Epson::write(0x00);    
 }
 // Print and feed n lines
 // prints the data in the print buffer and feeds n lines
