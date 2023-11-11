@@ -212,8 +212,9 @@ void Epson::speed(int inSpeed)
     Epson::write(2);
     Epson::write(0);
     Epson::write(50);
-    char stringbuff[3];
-    Epson::write((uint8_t)itoa(inSpeed, stringbuff,10));
+    // char stringbuff[3];
+    // itoa(inSpeed, stringbuff,10)
+    Epson::write((uint8_t) inSpeed);
 }
 
 size_t Epson::write(uint8_t c) {
