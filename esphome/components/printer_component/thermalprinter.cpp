@@ -16,7 +16,7 @@ static const char *TAG = "printer_component.component";
 Epson::Epson()
 {
   // Serial1 = HardwareSerial::HardwareSerial(0);
-  Serial1.begin( 115200, SERIAL_8N2, 20, 21 );
+  Serial1.begin( 115200, SERIAL_8N1, 20, 21, true );
   // this->_rxPin = rxPin;
   // this->_txPin = txPin;
 
