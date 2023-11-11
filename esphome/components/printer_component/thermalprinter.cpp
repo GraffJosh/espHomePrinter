@@ -214,6 +214,14 @@ void Epson::speed(int inSpeed)
     Epson::write(50);
     // char stringbuff[3];
     // itoa(inSpeed, stringbuff,10)
+    if(inSpeed < 1)
+    {
+      inSpeed = 1;
+    }
+    if (inSpeed > 10)
+    {
+      inSpeed = 10;
+    }
     Epson::write((uint8_t) inSpeed);
 }
 
