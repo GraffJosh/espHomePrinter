@@ -17,6 +17,9 @@ Epson::Epson()
 {
   // this->_rxPin = rxPin;
   // this->_txPin = txPin;
+  EspSoftwareSerial::Config swSerialConfig = EspSoftwareSerial::SWSERIAL_8E1;
+  SerialConfig hwSerialConfig = ::SERIAL_8E1;
+
   this->start();
 }
 
@@ -202,8 +205,7 @@ void Epson::cut() {
 }
 
 size_t Epson::write(uint8_t c) {
-  uint8_t character = (c - 54);
-  uart::UARTDevice::write(character);
+  uart::UARTDevice::write(c);
   return 1;
 }
 
