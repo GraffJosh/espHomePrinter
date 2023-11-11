@@ -11,6 +11,7 @@
  * ********************************************/
 // reference: 
 //https://www.pos.com.au/Help-SP/PrinterCommandsforEscPOSNonGraph.html
+// https://download4.epson.biz/sec_pubs/pos/reference_en/escpos/ref_escpos_en/receipt_with_barcode.html
 #ifndef thermalprinter_h
 #define thermalprinter_h
 
