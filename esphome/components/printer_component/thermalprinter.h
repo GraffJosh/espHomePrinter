@@ -61,7 +61,7 @@ void logWrapback(const char* text);
 
 private:  
 
-HardwareSerial printerSerial;
+HardwareSerial printerSerial(0);
 
 };
 
