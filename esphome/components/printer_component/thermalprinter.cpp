@@ -55,7 +55,11 @@ int Epson::read(){
     result = Serial1.read();
     return result;
 }
-
+int Epson::printLogo(){
+  Epson::write(ESC);  
+  Epson::write(0x20);
+  Epson::write(0x25);    
+}
 // Print and feed n lines
 // prints the data in the print buffer and feeds n lines
 void Epson::feed(uint8_t n){
