@@ -44,6 +44,7 @@ void doubleHeightOn();
 void feed(uint8_t n);
 void feed();
 void speed(int speed);
+void letterSpacing(int spacing);
 void lineSpacing(uint8_t n);
 void reverseOff();
 void reverseOn();

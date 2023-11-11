@@ -55,10 +55,17 @@ int Epson::read(){
     result = Serial1.read();
     return result;
 }
-void Epson::printLogo(){
+
+void Epson::letterSpacing(int spacing){
   Epson::write(ESC);  
   Epson::write(0x20);
-  Epson::write(0);    
+  Epson::write(spacing);    
+}
+void Epson::printLogo(){
+  Epson::write(0x1C);  
+  Epson::write(0x70);  
+  Epson::write(0x20);
+  Epson::write(0x25);    
 }
 // Print and feed n lines
 // prints the data in the print buffer and feeds n lines
