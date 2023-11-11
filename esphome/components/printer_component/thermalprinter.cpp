@@ -61,10 +61,16 @@ void Epson::letterSpacing(int spacing){
   Epson::write(spacing);    
 }
 void Epson::printLogo(){
-  Epson::write(0x1C);  
-  Epson::write(0x70);  
-  Epson::write(0x00);
-  Epson::write(0x00);    
+  GS "(L"   6   0  48  85  "A1"   1 2
+  Epson::write(GS);  
+  Epson::write("(L");  
+  Epson::write(6);  
+  Epson::write(0);  
+  Epson::write(48);  
+  Epson::write(85);  
+  Epson::write("A1");
+  Epson::write(1);
+  Epson::write(2);    
 }
 // Print and feed n lines
 // prints the data in the print buffer and feeds n lines
@@ -221,7 +227,11 @@ void Epson::cut() {
 /// </param>
 void Epson::printImage(const uint8_t* image,int width,int height)
 {
-  
+// '// Set graphics data: [Function 67] Define the NV graphics data (raster format)
+// '// 128(=8*16) dots wide and 120 dots tall with respect to key code "G1"
+// '// GS ( L   pL  pH   m  fn   a kc1/Kc2  b  xL  xH  yL  yH   c
+//https://download4.epson.biz/sec_pubs/pos/reference_en/escpos/ref_escpos_en/graphics.html
+
   for (int i=0;i<(width*height);i++)
   {
     ESP_LOGD("INFO","%d",image[i]);
