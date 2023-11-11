@@ -209,7 +209,7 @@ size_t Epson::write(uint8_t c) {
 void Epson::printString(const char* text)
 {
     // Traverse the string 
-  for (int i = 0;strlen(text); i++) { 
+  for (int i = 0;i<10; i++) { 
     // Print current character 
       this->write(text[i]); 
   } 
