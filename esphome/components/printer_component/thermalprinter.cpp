@@ -15,8 +15,8 @@ namespace thermalprinter {
 static const char *TAG = "printer_component.component";
 Epson::Epson()
 {
-  // printerSerial = HardwareSerial::HardwareSerial(0);
-  printerSerial.begin( 115200, SERIAL_8N1, 20, 21 );
+  // Serial1 = HardwareSerial::HardwareSerial(0);
+  Serial1.begin( 115200, SERIAL_8N1, 20, 21 );
   // this->_rxPin = rxPin;
   // this->_txPin = txPin;
 
@@ -51,7 +51,7 @@ int Epson::getStatus(){
 
 int Epson::read(){
     int result;
-    result = printerSerial.read();
+    result = Serial1.read();
     return result;
 }
 
@@ -205,7 +205,7 @@ void Epson::cut() {
 }
 
 size_t Epson::write(uint8_t c) {
-  printerSerial.write(c);
+  Serial1.write(c);
   return 1;
 }
 
