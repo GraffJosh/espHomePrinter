@@ -15,7 +15,7 @@ namespace thermalprinter {
 static const char *TAG = "printer_component.component";
 Epson::Epson()
 {
-  printerSerial = HardwareSerial()
+  printerSerial = HardwareSerial::HardwareSerial(0)
   printerSerial.begin( 115200, SERIAL_8N1, 20, 21 );
   // this->_rxPin = rxPin;
   // this->_txPin = txPin;
@@ -221,7 +221,7 @@ size_t Epson::write(uint8_t c) {
 
 void Epson::logWrapback(const char* text)
 {
-  ESP_LOGCONFIG(TAG, "wrapback: %s",text);
+  // ESP_LOGCONFIG(TAG, "wrapback: %s",text);
 }
 
 }
