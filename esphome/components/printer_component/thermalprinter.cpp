@@ -15,7 +15,7 @@ namespace thermalprinter {
 static const char *TAG = "printer_component.component";
 Epson::Epson()
 {
-  printerSerial = HardwareSerial::HardwareSerial(0);
+  // printerSerial = HardwareSerial::HardwareSerial(0);
   printerSerial.begin( 115200, SERIAL_8N1, 20, 21 );
   // this->_rxPin = rxPin;
   // this->_txPin = txPin;
@@ -24,7 +24,7 @@ Epson::Epson()
 }
 
 void Epson::dump_config(){
-    ESP_LOG_INFO(TAG, "JPGIndustries Printer component");
+    // ESP_LOG_INFO(TAG, "JPGIndustries Printer component");
     // int result = getStatus();
     // char string_buffer[(sizeof(result)) + 1];
     // memcpy(string_buffer, &result, sizeof(result));
