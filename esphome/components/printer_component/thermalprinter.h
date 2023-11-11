@@ -20,7 +20,7 @@
 namespace esphome {
 namespace thermalprinter {
 
-class Epson : public Print, public uart::UARTDevice, public Component {
+class Epson : public Print, public uart::ESP32ArduinoUARTComponent, public Component {
 public:
   
   Epson();

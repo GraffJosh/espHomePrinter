@@ -202,7 +202,7 @@ void Epson::cut() {
 }
 
 size_t Epson::write(uint8_t c) {
-  uart::UARTDevice::write(ASCII_GS, c);
+  uart::ESP32ArduinoUARTComponent::write(ASCII_GS, c);
   return 1;
 }
 
