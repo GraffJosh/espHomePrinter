@@ -4,7 +4,7 @@ import esphome.config_validation as cv
 # from esphome.components import uart
 from esphome.const import CONF_ID
 
-DEPENDENCIES = ["uart"]
+# DEPENDENCIES = ["uart"]
 
 thermalprinter_ns = cg.esphome_ns.namespace("thermalprinter")
 PrinterComponent = thermalprinter_ns.class_("Epson", cg.Component)  # , uart.UARTDevice)
