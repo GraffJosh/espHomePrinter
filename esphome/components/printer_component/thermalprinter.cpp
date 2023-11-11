@@ -213,7 +213,7 @@ void Epson::printImage(uint8_t* image,int width,int height)
 {
   
   if (width != 384 || height > 65635) {
-    ESP_LOG_INFO("Image size error width: %d, Height: %d",width,height);
+    ESP_LOGD("INFO","Image size error width: %d, Height: %d",width,height);
   }
 
   //Print LSB first bitmap
