@@ -202,7 +202,7 @@ void Epson::cut() {
 }
 
 size_t Epson::write(uint8_t c) {
-  this->write(c);
+  uart::UARTDevice::write(c);
   return 1;
 }
 
