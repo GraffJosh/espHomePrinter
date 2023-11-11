@@ -201,7 +201,7 @@ void Epson::cut() {
   this->write(0xA); // print buffer and line feed
 }
 
-size_t Epson::write(uint8_t c) {
+size_t Epson::write(char c) {
   uart::UARTDevice::write(c);
   return 1;
 }
