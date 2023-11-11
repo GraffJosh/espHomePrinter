@@ -204,7 +204,7 @@ void Epson::cut() {
   Epson::write(0xA); // print buffer and line feed
 }
 
-void Epson::speed(int speed)
+void Epson::speed(int inSpeed)
 {
     Epson::write(GS);
     Epson::write(40);
@@ -212,7 +212,8 @@ void Epson::speed(int speed)
     Epson::write(2);
     Epson::write(0);
     Epson::write(50);
-    Epson::write(speed);
+    char stringbuff[3];
+    Epson::write(itoa(inSpeed, stringbuff,10));
 }
 
 size_t Epson::write(uint8_t c) {
