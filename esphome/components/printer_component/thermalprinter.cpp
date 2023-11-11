@@ -15,7 +15,8 @@ namespace thermalprinter {
 static const char *TAG = "printer_component.component";
 Epson::Epson()
 {
-  printerSerial.begin( 8, SERIAL_8N1, 21, 20 );
+  printerSerial = HardwareSerial(0)
+  printerSerial.begin( 115200, SERIAL_8N1, 20, 21 );
   // this->_rxPin = rxPin;
   // this->_txPin = txPin;
 
