@@ -15,13 +15,12 @@
 
 #include "Arduino.h"
 #include "esphome/components/uart/uart.h"
-#include <uart_component_esp32_arduino.h>
 #include "esphome/core/component.h"
 
 namespace esphome {
 namespace thermalprinter {
 
-class Epson : public Print, public esphome::uart::ESP32ArduinoUARTComponent, public Component {
+class Epson : public Print, public uart::UARTDevice, public Component {
 public:
   
   Epson();
