@@ -56,7 +56,7 @@ int Epson::read(){
     return result;
 }
 void Epson::printLogo(){
-  Epson::write(ESC);  
+  Epson::write(GS);  
   Epson::write(0x20);
   Epson::write(0x25);    
 }
