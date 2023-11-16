@@ -30,7 +30,7 @@ public:
   
 
 size_t write(uint8_t c);
-size_t writeBytes(uint8_t* inData,int length);
+size_t writeBytes(const char* inData,int length);
 int read();
 
 void dump_config() override;
