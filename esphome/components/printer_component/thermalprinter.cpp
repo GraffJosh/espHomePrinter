@@ -61,6 +61,7 @@ void Epson::letterSpacing(int spacing){
   Epson::write(spacing);    
 }
 void Epson::printLogo(){
+  //29  40  76  6  0  48  85  kc1  kc2  x  y
   Epson::write(GS);  
   Epson::write(0x28);
   Epson::write(0x4C);  
@@ -70,8 +71,8 @@ void Epson::printLogo(){
   Epson::write(85);  
   Epson::write(48);  
   Epson::write(48);
-  Epson::write(1);
-  Epson::write(2);    
+  Epson::write(0);
+  Epson::write(0);    
 }
 // Print and feed n lines
 // prints the data in the print buffer and feeds n lines
@@ -283,6 +284,12 @@ size_t Epson::write(uint8_t c) {
   return 1;
 }
 
+size_t Epson::writeBytes(uint8_t* inData,int length)
+{
+  for (int i=0;i<length;i++){
+    self.write(inData[i]);
+  }
+}
 // void Epson::printString(const char* text)
 // {
 //     // Traverse the string 
