@@ -286,9 +286,11 @@ size_t Epson::write(uint8_t c) {
 
 size_t Epson::writeBytes(uint8_t* inData,int length)
 {
+  size_t writtenBytes = 0;
   for (int i=0;i<length;i++){
-    Epson::write(inData[i]);
+    writtenBytes += Epson::write(inData[i]);
   }
+  return writtenBytes;
 }
 // void Epson::printString(const char* text)
 // {
