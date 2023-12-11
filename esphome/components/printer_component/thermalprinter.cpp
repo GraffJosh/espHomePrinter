@@ -342,12 +342,13 @@ void Epson::listenOnTCPServer()
       {
         Epson::print( "Message Received!");
         Epson::print("\n");
+        
+        while (tcpClient.available()>0) {
+          char c = tcpClient.read();
+          Epson::write(c);
+        }
+        return;
       }
-      while (tcpClient.available()>0) {
-        char c = tcpClient.read();
-        Epson::write(c);
-      }
-      return;
       delay(10);
     }
     delay(100);
