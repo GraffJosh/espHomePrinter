@@ -307,6 +307,7 @@ void Epson::logWrapback(const char* text)
 
 void Epson::startTCPServer()
 {
+  Epson::print("Start TCP Server\n");
   if(serverStarted)
   {
     stopTCPServer();
@@ -322,7 +323,6 @@ bool Epson::isAvailable()
 }
 bool Epson::connected()
 {
-    
   if(serverStarted)
   {
     tcpClient = tcpServer->available();
@@ -398,6 +398,7 @@ void Epson::listenOnTCPServer()
 }
 void Epson::stopTCPServer()
 {
+  Epson::print("Stop TCP Server\n");
   tcpServer->stop();
   serverStarted = false;
 }
