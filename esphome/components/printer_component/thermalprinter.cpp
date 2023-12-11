@@ -348,11 +348,12 @@ bool Epson::connected()
       clientConnected = tcpClient->connected();
       if (clientConnected)
       {
-        Epson::print("TCP Client Connected\n\n");
+        Epson::print("TCP Client Connected\n");
         //use this var so we don't have to instantiate the client repeatedly
         clientConnected = true;
       }else{
         // tcpClient->stop();
+        Epson::print("TCP Client Disconnected\n");
         clientConnected = false;
       }
     }
@@ -368,6 +369,7 @@ bool Epson::hasData()
 }
 char Epson::read()
 {
+  Epson::print("READ\n");
   return tcpClient->read();
 }
 void Epson::listenOnTCPServer()
