@@ -341,7 +341,7 @@ bool Epson::connected()
         if(clientConnected)
         {
           Epson::print("TCP Client Disconnected\n");
-          tcpClient.stop();
+          tcpClient.stop(); 
         }
         clientConnected = false;
       }
@@ -402,6 +402,10 @@ void Epson::listenOnTCPServer()
 void Epson::stopTCPServer()
 {
   Epson::print("Stop TCP Server\n");
+  if(tcpClient)
+  {
+    tcpClient.stop();
+  }
   tcpServer.stop();
   serverStarted = false;
 }
