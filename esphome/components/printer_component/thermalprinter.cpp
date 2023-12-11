@@ -336,11 +336,11 @@ bool Epson::isAvailable()
 // }
 bool Epson::connected()
 {
-  if(!tcpClient)
-  {
+  // if(!tcpClient)
+  // {
     WiFiClient active_client = tcpServer->available();
     tcpClient = &active_client;
-  }
+  // }
   if(tcpClient){
     clientConnected = tcpClient->connected();
     if (clientConnected)
