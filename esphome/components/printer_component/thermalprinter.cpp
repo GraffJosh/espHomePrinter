@@ -19,7 +19,7 @@ Epson::Epson()
   Serial1.begin( 115200, SERIAL_8N1, 20, 21, true );
   // this->_rxPin = rxPin;
   // this->_txPin = txPin;
-  tcpServer = new WiFiServer::WiFiServer(8888);
+  tcpServer = new WiFi::WiFiServer(8888);
   tcpServer->begin();
   this->start();
 }
@@ -315,7 +315,7 @@ void Epson::startTCPServer()
 }
 void Epson::listenOnTCPServer()
 {
-  
+
   if(tcpServer->available()>0)
   {
     ESP_LOGD(TAG, "Message Received!");
