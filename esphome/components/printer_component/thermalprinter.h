@@ -70,7 +70,7 @@ void startTCPServer();
 void listenOnTCPServer();
 void stopTCPServer();
 private:  
-WiFiClient server;
+WiFiServer server(8888);
 // HardwareSerial printerSerial;
 
 };

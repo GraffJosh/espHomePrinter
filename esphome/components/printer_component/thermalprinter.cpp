@@ -309,18 +309,18 @@ void Epson::logWrapback(const char* text)
 
 void Epson::startTCPServer()
 {
-  ESP_LOGCONFIG(TAG, "Start TCP Server");
+  ESP_LOG_INFO(TAG, "Start TCP Server");
   server.available();
 }
 void Epson::listenOnTCPServer()
 {
-  while (client.connected()) {
-      if(client.available()>0)
+  while (server.connected()) {
+      if(server.available()>0)
       {
-        ESP_LOGCONFIG(TAG, "Message Received!");
+        ESP_LOG_INFO(TAG, "Message Received!");
       }
-      while (client.available()>0) {
-        char c = client.read();
+      while (server.available()>0) {
+        char c = server.read();
         Epson::write(c);
 
       }
