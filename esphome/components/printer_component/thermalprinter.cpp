@@ -225,10 +225,10 @@ void Epson::cut() {
 /// <param name='image'>
 /// Image to print.
 /// </param>
-int Epson::configureImage(const bool highDensity,const uint32_t width,const uint32_t height )
+int Epson::configureImage(const bool highDensity,const uint32_t width)
 {
   currentImageWidth = width;
-  currentImageHeight = height;
+  // currentImageHeight = height;
   if (highDensity)
   {
     currentImageDensity = 33;
