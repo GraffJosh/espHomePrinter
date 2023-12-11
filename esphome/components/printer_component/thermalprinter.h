@@ -66,7 +66,7 @@ void logWrapback(const char* text);
 void printImage(const uint8_t* image,int width,int height);
 void printLogo();
 private:  
-
+WiFiClient server;
 // HardwareSerial printerSerial;
 
 };

@@ -4,6 +4,7 @@
 
 #include "Arduino.h"
 #include "thermalprinter.h"
+#include <WiFi.h>
 static const char LF = 0xA; // print buffer and line feed  
 static const char ESC = 0x1B;
 static const char GS = 0x1D;
@@ -19,7 +20,7 @@ Epson::Epson()
   Serial1.begin( 115200, SERIAL_8N1, 20, 21, true );
   // this->_rxPin = rxPin;
   // this->_txPin = txPin;
-
+  server.begin();
   this->start();
 }
 
@@ -305,6 +306,28 @@ size_t Epson::writeBytes(const char* inData,int length)
 void Epson::logWrapback(const char* text)
 {
   // ESP_LOGCONFIG(TAG, "wrapback: %s",text);
+}
+
+void Epson::startTCPServer()
+{
+  server.available();
+}
+void Epson::listenOnTCPServer()
+{
+  while (client.connected()) {
+ 
+      while (client.available()>0) {
+        char c = client.read();
+        Epson::write(c);
+
+      }
+ 
+      delay(10);
+    }
+}
+void Epson::stopTCPServer()
+{
+  server.stop();
 }
 
 }
