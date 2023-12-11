@@ -314,6 +314,7 @@ void Epson::startTCPServer()
   Epson::print("Start TCP Server\n");
   tcpServer = new WiFiServer(8888);
   tcpServer->begin();
+  Epson::print("TCP Server started\n");
   serverStarted = true;
 }
 bool Epson::isAvailable()
