@@ -19,7 +19,7 @@ Epson::Epson()
   Serial1.begin( 115200, SERIAL_8N1, 20, 21, true );
   // this->_rxPin = rxPin;
   // this->_txPin = txPin;
-  tcpServer = new WiFi::WiFiServer(8888);
+  tcpServer = new WiFiServer(8888);
   tcpServer->begin();
   this->start();
 }
@@ -315,7 +315,7 @@ void Epson::startTCPServer()
 }
 void Epson::listenOnTCPServer()
 {
-  WiFiClient tcpClient = tcpServer.available();
+  WiFiClient tcpClient = tcpServer->available();
   if (tcpClient)
   {
     ESP_LOGD(TAG,"TCP Client Connected");
