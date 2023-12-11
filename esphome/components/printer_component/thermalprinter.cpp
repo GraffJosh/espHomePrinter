@@ -347,7 +347,7 @@ void Epson::listenOnTCPServer()
         
         while (tcpClient.available()>0) {
           char c = tcpClient.read();
-          Epson::print("%c",c);
+          Epson::print(c);
         }
         return;
       }
