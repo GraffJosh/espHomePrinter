@@ -308,7 +308,7 @@ void Epson::logWrapback(const char* text)
 
 void Epson::startTCPServer()
 {
-  ESP_LOGD("INFO", "Start TCP Server");
+  Epson::print( "Start TCP Server");
   tcpServer = new WiFiServer(8888);
   tcpServer->begin();
 }
@@ -317,12 +317,12 @@ void Epson::listenOnTCPServer()
   WiFiClient tcpClient = tcpServer->available();
   if (tcpClient)
   {
-    ESP_LOGD("INFO","TCP Client Connected");
+    Epson::print("TCP Client Connected");
     while (tcpClient.connected())
     {
       if(tcpClient.available()>0)
       {
-        ESP_LOGD("INFO", "Message Received!");
+        Epson::print( "Message Received!");
       }
       while (tcpClient.available()>0) {
         char c = tcpClient.read();
@@ -332,7 +332,7 @@ void Epson::listenOnTCPServer()
       delay(10);
     }
   }else{
-    ESP_LOGD("INFO","TCP Client didn't connect!");
+    Epson::print("TCP Client didn't connect!");
   }
 }
 void Epson::stopTCPServer()
