@@ -19,7 +19,7 @@ Epson::Epson()
   Serial1.begin( 115200, SERIAL_8N1, 20, 21, true );
   // this->_rxPin = rxPin;
   // this->_txPin = txPin;
-  server = WiFiServer::WiFiServer(8888);
+  server(8888);
   server.begin();
   this->start();
 }
