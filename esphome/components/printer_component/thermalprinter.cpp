@@ -19,8 +19,8 @@ Epson::Epson()
   Serial1.begin( 115200, SERIAL_8N1, 20, 21, true );
   // this->_rxPin = rxPin;
   // this->_txPin = txPin;
-  server(8888);
-  server.begin();
+  server = new WiFiServer::WiFiServer(8888);
+  server->begin();
   this->start();
 }
 
@@ -310,18 +310,18 @@ void Epson::logWrapback(const char* text)
 
 void Epson::startTCPServer()
 {
-  ESP_LOG_INFO(TAG, "Start TCP Server");
-  server.available();
+  ESP_LOGD(TAG, "Start TCP Server");
+  server->available();
 }
 void Epson::listenOnTCPServer()
 {
-  while (server.connected()) {
-      if(server.available()>0)
+  while (server->connected()) {
+      if(server->available()>0)
       {
-        ESP_LOG_INFO(TAG, "Message Received!");
+        ESP_LOGD(TAG, "Message Received!");
       }
-      while (server.available()>0) {
-        char c = server.read();
+      while (server->available()>0) {
+        char c = server->read();
         Epson::write(c);
 
       }
@@ -331,7 +331,7 @@ void Epson::listenOnTCPServer()
 }
 void Epson::stopTCPServer()
 {
-  server.stop();
+  server->stop();
 }
 
 }
