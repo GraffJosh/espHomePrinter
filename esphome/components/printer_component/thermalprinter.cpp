@@ -307,12 +307,11 @@ void Epson::logWrapback(const char* text)
 
 void Epson::startTCPServer()
 {
-  Epson::print("Start TCP Server\n");
   if(serverStarted)
   {
     stopTCPServer();
   }
-  // Epson::print( "Start TCP Server\n");
+  Epson::print("Start TCP Server\n");
   tcpServer = new WiFiServer(8888);
   tcpServer->begin();
   serverStarted = true;
