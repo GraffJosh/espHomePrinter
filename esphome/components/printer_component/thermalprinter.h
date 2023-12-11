@@ -70,7 +70,7 @@ void startTCPServer();
 bool isAvailable();
 void listenOnTCPServer();
 void stopTCPServer();
-bool checkForClient();
+bool connected();
 bool hasData();
 char read();
 private:  
