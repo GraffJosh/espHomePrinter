@@ -25,7 +25,7 @@
 
 namespace esphome {
 namespace thermalprinter {
-static Epson::Epson printer;
+static std::vector<AsyncClient*> clients; // a list to hold all clients
 
 // public uart::UARTDevice, 
 class Epson : public Print, public Component {
@@ -72,27 +72,24 @@ void printLogo();
 
 void startTCPServer();
 
+void initTCP(Epson printer);
+void handleNewClient(void* arg, AsyncClient* client);
+void handleError(void* arg, AsyncClient* client, int8_t error);
+void handleData(void* arg, AsyncClient* client, void *data, size_t len);
+void handleDisconnect(void* arg, AsyncClient* client);
+void handleTimeOut(void* arg, AsyncClient* client, uint32_t time);
+
 bool isAvailable();
 void listenOnTCPServer();
 void stopTCPServer();
 bool connected();
 bool hasData();
 char read();
-
-static void initTCP(Epson printer);
-static void handleNewClient(void* arg, AsyncClient* client);
-static void handleError(void* arg, AsyncClient* client, int8_t error);
-static void handleData(void* arg, AsyncClient* client, void *data, size_t len);
-static void handleDisconnect(void* arg, AsyncClient* client);
-static void handleTimeOut(void* arg, AsyncClient* client, uint32_t time);
-
 private:  
 WiFiServer tcpServer;
 WiFiClient tcpClient;
 bool serverStarted = false;
 bool clientConnected = false;
-
-static std::vector<AsyncClient*> clients; // a list to hold all clients
 
 // HardwareSerial printerSerial;
 
