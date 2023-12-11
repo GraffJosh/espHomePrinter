@@ -17,6 +17,8 @@
 
 #include "Arduino.h"
 #include <WiFi.h>
+#include <ESPAsyncTCP.h>
+#include <vector>
 
 #include "esphome/core/component.h"
 #include <HardwareSerial.h>
@@ -65,7 +67,14 @@ void printString(const char* text);
 void logWrapback(const char* text);
 void printImage(const uint8_t* image,int width,int height);
 void printLogo();
+
 void startTCPServer();
+static void handleNewClient(void* arg, AsyncClient* client);
+static void handleError(void* arg, AsyncClient* client, int8_t error);
+static void handleData(void* arg, AsyncClient* client, void *data, size_t len);
+static void handleDisconnect(void* arg, AsyncClient* client);
+static void handleTimeOut(void* arg, AsyncClient* client, uint32_t time);
+
 bool isAvailable();
 void listenOnTCPServer();
 void stopTCPServer();
@@ -77,6 +86,8 @@ WiFiServer tcpServer;
 WiFiClient tcpClient;
 bool serverStarted = false;
 bool clientConnected = false;
+
+static std::vector<AsyncClient*> clients; // a list to hold all clients
 // HardwareSerial printerSerial;
 
 };
