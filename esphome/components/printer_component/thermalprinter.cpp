@@ -51,7 +51,7 @@ int Epson::getStatus(){
 //     int result;
 //     result = Serial1.read();
 //     return result;
-}
+// }
 
 void Epson::letterSpacing(int spacing){
   Epson::write(ESC);  
