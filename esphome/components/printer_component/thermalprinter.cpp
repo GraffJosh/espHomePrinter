@@ -408,7 +408,7 @@ void Epson::listenOnTCPServer()
         Epson::print("\nEnd printing\n");
         return;
       }
-      delay(10);
+      delay(100);
     }
     delay(100);
     i++;
