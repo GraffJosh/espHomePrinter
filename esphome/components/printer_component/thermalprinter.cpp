@@ -312,7 +312,7 @@ void Epson::startTCPServer()
   {
     stopTCPServer();
   }
-  Epson::print( "Start TCP Server");
+  Epson::print( "Start TCP Server\n");
   tcpServer = new WiFiServer(8888);
   tcpServer->begin();
   serverStarted = true;
@@ -347,7 +347,7 @@ void Epson::listenOnTCPServer()
         
         while (tcpClient.available()>0) {
           char c = tcpClient.read();
-          Epson::write(c);
+          Epson::print("%c",c);
         }
         return;
       }
