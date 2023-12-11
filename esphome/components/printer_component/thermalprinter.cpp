@@ -328,14 +328,14 @@ bool Epson::connected()
     tcpClient = tcpServer->available();
     // tcpClient = &active_client;
     if(tcpClient){
-      clientConnected = tcpClient.connected();
-      if (clientConnected)
+      if (tcpClient.connected())
       {
+        //this check effectively oneshots the debug statements
         if(!clientConnected)
         {
           Epson::print("TCP Client Connected\n");
-        }
           clientConnected = true;
+        }
       }else{
         if(clientConnected)
         {
@@ -348,7 +348,6 @@ bool Epson::connected()
   }else{
     clientConnected = false;
   }
-
   return clientConnected;
 }
 bool Epson::hasData()
