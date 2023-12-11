@@ -389,6 +389,9 @@ void Epson::listenOnTCPServer()
     if (Epson::connected())
     {
       Epson::print("TCP Client Connected\n\n");
+      this->tcpClient.connected();
+      Epson::print("TCP Client is alive\n\n");
+
     }
     while (Epson::connected())
     {
