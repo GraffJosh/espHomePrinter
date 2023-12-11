@@ -71,6 +71,7 @@ void listenOnTCPServer();
 void stopTCPServer();
 private:  
 WiFiServer* tcpServer;
+bool serverStarted = false;
 // HardwareSerial printerSerial;
 
 };

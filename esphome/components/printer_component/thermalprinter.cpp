@@ -308,14 +308,24 @@ void Epson::logWrapback(const char* text)
 
 void Epson::startTCPServer()
 {
+  if(serverStarted)
+  {
+    stopTCPServer();
+  }
   Epson::print( "Start TCP Server");
   tcpServer = new WiFiServer(8888);
   tcpServer->begin();
+  serverStarted = true;
 }
 void Epson::listenOnTCPServer()
 {
+  if (!serverStarted)
+  {
+    startTCPServer();
+  }
   int i = 0;
-  while(i < 30000)
+  Epson::print("begin listen");
+  while(i < 10000)
   {
     WiFiClient tcpClient = tcpServer->available();
     // Epson::print(tcpServer->available());
@@ -342,10 +352,12 @@ void Epson::listenOnTCPServer()
     }
     i++;
   }
+  Epson::print("End listen");
 }
 void Epson::stopTCPServer()
 {
   tcpServer->stop();
+  serverStarted = false;
 }
 
 }
