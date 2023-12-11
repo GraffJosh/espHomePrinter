@@ -325,10 +325,10 @@ bool Epson::connected()
     
   if(serverStarted)
   {
-    WiFiClient active_client = tcpServer->available();
-    tcpClient = &active_client;
+    tcpClient = tcpServer->available();
+    // tcpClient = &active_client;
     if(tcpClient){
-      clientConnected = tcpClient->connected();
+      clientConnected = tcpClient.connected();
       if (clientConnected)
       {
         if(!clientConnected)
@@ -340,7 +340,7 @@ bool Epson::connected()
         if(clientConnected)
         {
           Epson::print("TCP Client Disconnected\n");
-          tcpClient->stop();
+          tcpClient.stop();
         }
         clientConnected = false;
       }
@@ -353,12 +353,12 @@ bool Epson::connected()
 }
 bool Epson::hasData()
 {
-  return (tcpClient->available()>0);
+  return (tcpClient.available()>0);
 }
 char Epson::read()
 {
   Epson::print("READ\n");
-  return tcpClient->read();
+  return tcpClient.read();
 }
 void Epson::listenOnTCPServer()
 {
@@ -375,21 +375,21 @@ void Epson::listenOnTCPServer()
     // Epson::print("\n");
     // if (!tcpClient)
     // {
-      // Epson::print(tcpClient->connected());
+      // Epson::print(tcpClient.connected());
       // Epson::print("\nTCP Client didn't connect!\n");
     // }
-    if (tcpClient->connected())
+    if (tcpClient.connected())
     {
       Epson::print("TCP Client Connected\n\n");
     }
-    while (tcpClient->connected())
+    while (tcpClient.connected())
     {
-      if(tcpClient->available()>0)
+      if(tcpClient.available()>0)
       {
         Epson::print( "Message Received!\n");
         
-        while (tcpClient->available()>0) {
-          char c = tcpClient->read();
+        while (tcpClient.available()>0) {
+          char c = tcpClient.read();
           Epson::print(c);
         }
         return;

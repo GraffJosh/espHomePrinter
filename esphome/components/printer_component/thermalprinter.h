@@ -74,7 +74,7 @@ bool hasData();
 char read();
 private:  
 WiFiServer* tcpServer;
-WiFiClient* tcpClient;
+WiFiClient tcpClient;
 bool serverStarted = false;
 bool clientConnected = false;
 // HardwareSerial printerSerial;
