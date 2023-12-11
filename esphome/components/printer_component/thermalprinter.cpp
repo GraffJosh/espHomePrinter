@@ -353,7 +353,7 @@ bool Epson::connected()
         clientConnected = true;
       }else{
         // tcpClient->stop();
-        Epson::print("TCP Client Disconnected\n");
+        // Epson::print("TCP Client Disconnected\n");
         clientConnected = false;
       }
     }
