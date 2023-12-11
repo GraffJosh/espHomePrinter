@@ -316,7 +316,7 @@ void Epson::startTCPServer()
   tcpServer->begin();
   serverStarted = true;
 }
-void Epson::isAvailable()
+bool Epson::isAvailable()
 {
   return serverStarted;
 }
@@ -342,14 +342,14 @@ bool Epson::connected()
     tcpClient = &active_client;
   }
   if(tcpClient){
-    clientConnected = tcpClient.connected();
+    clientConnected = tcpClient->connected();
     if (clientConnected)
     {
       Epson::print("TCP Client Connected\n\n");
       //use this var so we don't have to instantiate the client repeatedly
       clientConnected = true;
     }else{
-      tcpClient.stop();
+      tcpClient->stop();
       clientConnected = false;
     }
   }
