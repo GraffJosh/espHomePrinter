@@ -396,7 +396,6 @@ void Epson::listenOnTCPServer()
     }
     while (Epson::connected())
     {
-      Epson::print("TCP Client is still alive\n\n");
       if(this->tcpClient.available()>0)
       {
         Epson::print( "Message Received!\n");
