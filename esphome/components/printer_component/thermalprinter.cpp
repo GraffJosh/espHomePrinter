@@ -396,11 +396,11 @@ void Epson::listenOnTCPServer()
     }
     while (Epson::connected())
     {
-      if(this->tcpClient.available()>0)
+      if(Epson::hasData())
       {
         Epson::print( "Message Received!\n");
         
-        while (this->tcpClient.available()>0) {
+        while (Epson::hasData()) {
           char c = this->tcpClient.read();
           Epson::print(c);
         }
