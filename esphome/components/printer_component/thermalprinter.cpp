@@ -308,7 +308,7 @@ void Epson::logWrapback(const char* text)
 void Epson::startTCPServer()
 {
 	AsyncServer* server = new AsyncServer(8888); // start listening on tcp port 7050
-	server->onClient(&Epson::handleNewClient, server);
+	server->onClient((AcConnectHandler) &Epson::handleNewClient, server);
 	server->begin();
 }
 /* server events */
@@ -319,10 +319,10 @@ void Epson::handleNewClient(void* arg, AsyncClient* client) {
 	clients.push_back(client);
 	
 	// register events
-	client->onData(&Epson::handleData, NULL);
-	client->onError(&Epson::handleError, NULL);
-	client->onDisconnect(&Epson::handleDisconnect, NULL);
-	client->onTimeout(&Epson::handleTimeOut, NULL);
+	client->onData((AcConnectHandler) &Epson::handleData, NULL);
+	client->onError((AcConnectHandler) &Epson::handleError, NULL);
+	client->onDisconnect((AcConnectHandler) &Epson::handleDisconnect, NULL);
+	client->onTimeout((AcConnectHandler) &Epson::handleTimeOut, NULL);
 }
 void Epson::handleError(void* arg, AsyncClient* client, int8_t error) {
 	Epson::printf("\n connection error %s from client %s \n", client->errorToString(error), client->remoteIP().toString().c_str());
