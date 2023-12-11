@@ -321,12 +321,12 @@ void Epson::listenOnTCPServer()
     ESP_LOGD(TAG,"TCP Client Connected");
     while (tcpClient.connected())
     {
-      if(tcpClient->available()>0)
+      if(tcpClient.available()>0)
       {
         ESP_LOGD(TAG, "Message Received!");
       }
-      while (tcpClient->available()>0) {
-        char c = tcpClient->read();
+      while (tcpClient.available()>0) {
+        char c = tcpClient.read();
         Epson::write(c);
       }
 
