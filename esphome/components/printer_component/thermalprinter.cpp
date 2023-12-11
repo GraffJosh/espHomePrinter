@@ -327,7 +327,10 @@ bool Epson::connected()
 {
   if(serverStarted)
   {
-    tcpClient = tcpServer.available();
+    if(!clientConnected)
+    {
+      tcpClient = tcpServer.available();
+    }
     if(tcpClient)
     {
       // tcpClient = &active_client;
