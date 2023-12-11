@@ -352,7 +352,7 @@ bool Epson::connected()
         //use this var so we don't have to instantiate the client repeatedly
         clientConnected = true;
       }else{
-        tcpClient->stop();
+        // tcpClient->stop();
         clientConnected = false;
       }
     }
