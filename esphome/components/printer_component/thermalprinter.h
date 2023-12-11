@@ -20,7 +20,7 @@
 #include <vector>
 
 #include "esphome/core/component.h"
-// #include <me-no-dev/AsyncTCP.h>
+#include <AsyncTCP.h>
 #include <HardwareSerial.h>
 
 namespace esphome {
