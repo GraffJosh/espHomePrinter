@@ -25,8 +25,9 @@
 
 namespace esphome {
 namespace thermalprinter {
+static std::vector<AsyncClient*> clients; // a list to hold all clients
   
-static void initTCP()
+static void initTCP();
 static void handleNewClient(void* arg, AsyncClient* client);
 static void handleError(void* arg, AsyncClient* client, int8_t error);
 static void handleData(void* arg, AsyncClient* client, void *data, size_t len);
@@ -90,7 +91,6 @@ WiFiClient tcpClient;
 bool serverStarted = false;
 bool clientConnected = false;
 
-static std::vector<AsyncClient*> clients; // a list to hold all clients
 // HardwareSerial printerSerial;
 
 };
