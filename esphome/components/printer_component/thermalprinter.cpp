@@ -351,12 +351,20 @@ bool Epson::connected()
 }
 bool Epson::hasData()
 {
-  return (tcpClient.available()>0);
+  if(tcpClient)
+  {
+    return (tcpClient.available());
+  }else{
+    return false;
+  }
 }
 char Epson::read()
 {
   Epson::print("READ\n");
-  return tcpClient.read();
+  if(tcpClient)
+  {
+    return tcpClient.read();
+  }
 }
 void Epson::listenOnTCPServer()
 {
