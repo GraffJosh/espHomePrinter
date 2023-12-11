@@ -326,22 +326,25 @@ bool Epson::connected()
   if(serverStarted)
   {
     tcpClient = tcpServer.available();
-    // tcpClient = &active_client;
-    if (tcpClient.connected())
+    if(tcpClient)
     {
-      //this check effectively oneshots the debug statements
-      if(!clientConnected)
+      // tcpClient = &active_client;
+      if (tcpClient.connected())
       {
-        Epson::print("TCP Client Connected\n");
-        clientConnected = true;
+        //this check effectively oneshots the debug statements
+        if(!clientConnected)
+        {
+          Epson::print("TCP Client Connected\n");
+          clientConnected = true;
+        }
+      }else{
+        if(clientConnected)
+        {
+          Epson::print("TCP Client Disconnected\n");
+          tcpClient.stop();
+        }
+        clientConnected = false;
       }
-    }else{
-      if(clientConnected)
-      {
-        Epson::print("TCP Client Disconnected\n");
-        tcpClient.stop();
-      }
-      clientConnected = false;
     }
   }
   return clientConnected;
