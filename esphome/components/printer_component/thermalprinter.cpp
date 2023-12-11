@@ -401,8 +401,8 @@ void Epson::listenOnTCPServer()
         Epson::print( "Message Received!\n");
         
         while (Epson::hasData()) {
-          char c = this->tcpClient.read();
-          Epson::print(c);
+          // char c = this->tcpClient.read();
+          Epson::print(Epson::read());
         }
         Epson::print("\nEnd printing\n");
         return;
