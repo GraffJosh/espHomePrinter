@@ -390,11 +390,13 @@ void Epson::listenOnTCPServer()
     {
       Epson::print("TCP Client Connected\n\n");
       this->tcpClient.connected();
+      this->tcpClient.available();
       Epson::print("TCP Client is alive\n\n");
 
     }
     while (Epson::connected())
     {
+      Epson::print("TCP Client is still alive\n\n");
       if(this->tcpClient.available()>0)
       {
         Epson::print( "Message Received!\n");
@@ -403,6 +405,7 @@ void Epson::listenOnTCPServer()
           char c = this->tcpClient.read();
           Epson::print(c);
         }
+        Epson::print("\nEnd printing\n");
         return;
       }
       delay(10);
