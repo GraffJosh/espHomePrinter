@@ -4,7 +4,6 @@
 
 #include "Arduino.h"
 #include "thermalprinter.h"
-#include <WiFi.h>
 static const char LF = 0xA; // print buffer and line feed  
 static const char ESC = 0x1B;
 static const char GS = 0x1D;
