@@ -67,10 +67,9 @@ void printBarcode(uint8_t m,uint8_t n);
 void cut();
 void printString(const char* text);
 void logWrapback(const char* text);
-void printImage(const uint8_t* image,int width,int height);
+int configureImage(const bool highDensity,const uint32_t width,const uint32_t height );
+void printImageLine(const uint8_t* image);
 void printLogo();
-
-void startTCPServer();
 
 // void initTCP(Epson printer);
 // void handleNewClient(void* arg, AsyncClient* client);
@@ -79,17 +78,22 @@ void startTCPServer();
 // void handleDisconnect(void* arg, AsyncClient* client);
 // void handleTimeOut(void* arg, AsyncClient* client, uint32_t time);
 
+void startTCPServer();
 bool isAvailable();
 void listenOnTCPServer();
 void stopTCPServer();
 bool connected();
 bool hasData();
 char read();
+char* read(size_t buf_size);
 private:  
 WiFiServer tcpServer;
 WiFiClient tcpClient;
 bool serverStarted = false;
 bool clientConnected = false;
+uint32_t currentImageWidth = 0;
+uint32_t currentImageHeight = 0;
+int currentImageDensity = 1;
 
 // HardwareSerial printerSerial;
 

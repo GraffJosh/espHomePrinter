@@ -225,35 +225,54 @@ void Epson::cut() {
 /// <param name='image'>
 /// Image to print.
 /// </param>
-void Epson::printImage(const uint8_t* image,int width,int height)
+int Epson::configureImage(const bool highDensity,const uint32_t width,const uint32_t height )
+{
+  currentImageWidth = width;
+  currentImageHeight = height;
+  if (highDensity)
+  {
+    currentImageDensity = 33;
+    return width*3;
+  }else{
+    currentImageDensity = 0;
+    return width;
+  }
+}
+// void Epson::appendImageBuffer(const uint8_t* pixels, int length)
+// {
+
+// }
+void Epson::printImageLine(const uint8_t* line)
 {
 // '// Set graphics data: [Function 67] Define the NV graphics data (raster format)
 // '// 128(=8*16) dots wide and 120 dots tall with respect to key code "G1"
 // '// GS ( L   pL  pH   m  fn   a kc1/Kc2  b  xL  xH  yL  yH   c
 //https://download4.epson.biz/sec_pubs/pos/reference_en/escpos/ref_escpos_en/graphics.html
 
-  for (int i=0;i<(width*height);i++)
-  {
-    ESP_LOGD("INFO","%d",image[i]);
-  }
-  if (width != 384 || height > 65635) {
-    ESP_LOGD("INFO","Image size error width: %d, Height: %d",width,height);
-  }
+  // if (width != 384 || height > 65635) {
+  //   ESP_LOGD("INFO","Image size error width: %d, Height: %d",width,height);
+  // }
 
   //Print LSB first bitmap
-  Epson::write(18);
-  Epson::write(118);
-  
-  Epson::write((byte)(height & 255)); 	//height LSB
-  Epson::write((byte)(height >> 8)); 	//height MSB
+  // Epson::write(18);
+  // Epson::write(118);
+  // Epson::write((byte)(currentImageWidth & 255)); 	//currentImageWidth LSB
+  // Epson::write((byte)(currentImageWidth >> 8)); 	//height MSB
 
+  //parameters in the ESCPOS lib, these are a uint16 split in 2 denoting the 
+  //  width of the line. 
+  uint8_t nL = currentImageWidth & 255;
+  uint8_t nH = currentImageWidth >> 8;
+  Epson::writeBytes([27, 85, 255]);
+  Epson::writeBytes([27, 51, 1]);
+  Epson::writeBytes([27, 42, currentImageDensity, nL, nH]);
   
-  for (int y = 0; y < height; y++) {
-    sleep(20);
-    for (int x = 0; x < (width/8); x++) {
-      Epson::write(image[x + (y*x)]);
-    }	
-  }
+  Epson::writeBytes(line, currentImageDensity ? width*3:width);
+
+  Epson::writeBytes([13, 10]);
+  Epson::writeBytes([27,85,0]);
+  Epson::writeBytes([27,51,20]);
+
 }
 
 void Epson::speed(int inSpeed)
@@ -365,6 +384,15 @@ bool Epson::hasData()
 }
 char Epson::read()
 {
+  return tcpClient.read();
+}
+char* Epson::read(size_t buf_size)
+{
+  char* result = new char(buf_size);
+  for(int i=0; i<buf_size;i++)
+  {
+
+  }
   return tcpClient.read();
 }
 void Epson::listenOnTCPServer()
