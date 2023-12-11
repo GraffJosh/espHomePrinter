@@ -44,14 +44,13 @@ int Epson::getStatus(){
   Epson::write(0x04);  
   Epson::write(1);
   int result;
-  result = this->read();
   return result;
 }
 
-int Epson::read(){
-    int result;
-    result = Serial1.read();
-    return result;
+// int Epson::read(){
+//     int result;
+//     result = Serial1.read();
+//     return result;
 }
 
 void Epson::letterSpacing(int spacing){
