@@ -67,11 +67,17 @@ void logWrapback(const char* text);
 void printImage(const uint8_t* image,int width,int height);
 void printLogo();
 void startTCPServer();
+bool isAvailable();
 void listenOnTCPServer();
 void stopTCPServer();
+bool checkForClient();
+bool hasData();
+char read();
 private:  
 WiFiServer* tcpServer;
+WiFiClient* tcpClient;
 bool serverStarted = false;
+bool clientConnected = false;
 // HardwareSerial printerSerial;
 
 };

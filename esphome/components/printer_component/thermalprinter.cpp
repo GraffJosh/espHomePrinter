@@ -312,10 +312,58 @@ void Epson::startTCPServer()
   {
     stopTCPServer();
   }
-  Epson::print( "Start TCP Server\n");
+  // Epson::print( "Start TCP Server\n");
   tcpServer = new WiFiServer(8888);
   tcpServer->begin();
   serverStarted = true;
+}
+void Epson::isAvailable()
+{
+  return serverStarted;
+}
+bool Epson::checkForClient()
+{
+  WiFiClient active_client = tcpServer->available();
+  if (active_client.connected())
+  {
+    Epson::print("TCP Client Connected\n\n");
+    tcpClient = &active_client;
+    //use this var so we don't have to instantiate the client repeatedly
+    clientConnected = true;
+  }else{
+    clientConnected = false;
+  }
+  return clientConnected;
+}
+void Epson::connected()
+{
+  if(!tcpClient)
+  {
+    WiFiClient active_client = tcpServer->available();
+    tcpClient = &active_client;
+  }
+  if(tcpClient){
+    clientConnected = tcpClient.connected();
+    if (clientConnected)
+    {
+      Epson::print("TCP Client Connected\n\n");
+      //use this var so we don't have to instantiate the client repeatedly
+      clientConnected = true;
+    }else{
+      tcpClient.stop();
+      clientConnected = false;
+    }
+  }
+
+  return clientConnected;
+}
+bool Epson::hasData()
+{
+  return (tcpClient->available()>0);
+}
+char Epson::read()
+{
+  return tcpClient->read();
 }
 void Epson::listenOnTCPServer()
 {
@@ -332,21 +380,21 @@ void Epson::listenOnTCPServer()
     // Epson::print("\n");
     // if (!tcpClient)
     // {
-      // Epson::print(tcpClient.connected());
+      // Epson::print(tcpClient->connected());
       // Epson::print("\nTCP Client didn't connect!\n");
     // }
-    if (tcpClient.connected())
+    if (tcpClient->connected())
     {
       Epson::print("TCP Client Connected\n\n");
     }
-    while (tcpClient.connected())
+    while (tcpClient->connected())
     {
-      if(tcpClient.available()>0)
+      if(tcpClient->available()>0)
       {
         Epson::print( "Message Received!\n");
         
-        while (tcpClient.available()>0) {
-          char c = tcpClient.read();
+        while (tcpClient->available()>0) {
+          char c = tcpClient->read();
           Epson::print(c);
         }
         return;
