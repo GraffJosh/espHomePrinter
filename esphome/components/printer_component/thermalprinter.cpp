@@ -417,49 +417,49 @@ void Epson::stopTCPServer()
   serverStarted = false;
 }
 
-void Epson::initTCP(Epson printer)
-{
-  AsyncServer* server = new AsyncServer(8888); // start listening on tcp port 7050
-	server->onClient((void*)&Epson::handleNewClient, server);
-	server->begin();
-}
-/* server events */
-static void Epson::handleNewClient(void* arg, AsyncClient* client) {
-	// Epson::printf("\n new client has been connected to server, ip: %s", client->remoteIP().toString().c_str());
+// void Epson::initTCP(Epson printer)
+// {
+//   AsyncServer* server = new AsyncServer(8888); // start listening on tcp port 7050
+// 	server->onClient((void*)&Epson::handleNewClient, server);
+// 	server->begin();
+// }
+// /* server events */
+// static void Epson::handleNewClient(void* arg, AsyncClient* client) {
+// 	// Epson::printf("\n new client has been connected to server, ip: %s", client->remoteIP().toString().c_str());
 
-	// add to list
-	clients.push_back(client);
+// 	// add to list
+// 	clients.push_back(client);
 	
-	// register events
-	client->onData((void*)&Epson::handleData, NULL);
-	client->onError((void*)&Epson::handleError, NULL);
-	client->onDisconnect((void*)&Epson::handleDisconnect, NULL);
-	client->onTimeout((void*)&Epson::handleTimeOut, NULL);
-}
-static void Epson::handleError(void* arg, AsyncClient* client, int8_t error) {
-	// Epson::printf("\n connection error %s from client %s \n", client->errorToString(error), client->remoteIP().toString().c_str());
-}
+// 	// register events
+// 	client->onData((void*)&Epson::handleData, NULL);
+// 	client->onError((void*)&Epson::handleError, NULL);
+// 	client->onDisconnect((void*)&Epson::handleDisconnect, NULL);
+// 	client->onTimeout((void*)&Epson::handleTimeOut, NULL);
+// }
+// static void Epson::handleError(void* arg, AsyncClient* client, int8_t error) {
+// 	// Epson::printf("\n connection error %s from client %s \n", client->errorToString(error), client->remoteIP().toString().c_str());
+// }
 
-static void Epson::handleData(void* arg, AsyncClient* client, void *data, size_t len) {
-	// Epson::printf("\n data received from client %s \n", client->remoteIP().toString().c_str());
-	// Epson::printf((uint8_t*)data);
+// static void Epson::handleData(void* arg, AsyncClient* client, void *data, size_t len) {
+// 	// Epson::printf("\n data received from client %s \n", client->remoteIP().toString().c_str());
+// 	// Epson::printf((uint8_t*)data);
 
-	// reply to client
-	if (client->space() > 32 && client->canSend()) {
-		char reply[32];
-		// sprintf(reply, "this is from %s", SERVER_HOST_NAME);
-		client->add(reply, strlen(reply));
-		client->send();
-	}
-}
+// 	// reply to client
+// 	if (client->space() > 32 && client->canSend()) {
+// 		char reply[32];
+// 		// sprintf(reply, "this is from %s", SERVER_HOST_NAME);
+// 		client->add(reply, strlen(reply));
+// 		client->send();
+// 	}
+// }
 
-static void Epson::handleDisconnect(void* arg, AsyncClient* client) {
-	// Epson::printf("\n client %s disconnected \n", client->remoteIP().toString().c_str());
-}
+// static void Epson::handleDisconnect(void* arg, AsyncClient* client) {
+// 	// Epson::printf("\n client %s disconnected \n", client->remoteIP().toString().c_str());
+// }
 
-static void Epson::handleTimeOut(void* arg, AsyncClient* client, uint32_t time) {
-	// Epson::printf("\n client ACK timeout ip: %s \n", client->remoteIP().toString().c_str());
-}
+// static void Epson::handleTimeOut(void* arg, AsyncClient* client, uint32_t time) {
+// 	// Epson::printf("\n client ACK timeout ip: %s \n", client->remoteIP().toString().c_str());
+// }
 
 
 }

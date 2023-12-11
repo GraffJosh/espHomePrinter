@@ -72,12 +72,12 @@ void printLogo();
 
 void startTCPServer();
 
-void initTCP(Epson printer);
-void handleNewClient(void* arg, AsyncClient* client);
-void handleError(void* arg, AsyncClient* client, int8_t error);
-void handleData(void* arg, AsyncClient* client, void *data, size_t len);
-void handleDisconnect(void* arg, AsyncClient* client);
-void handleTimeOut(void* arg, AsyncClient* client, uint32_t time);
+// void initTCP(Epson printer);
+// void handleNewClient(void* arg, AsyncClient* client);
+// void handleError(void* arg, AsyncClient* client, int8_t error);
+// void handleData(void* arg, AsyncClient* client, void *data, size_t len);
+// void handleDisconnect(void* arg, AsyncClient* client);
+// void handleTimeOut(void* arg, AsyncClient* client, uint32_t time);
 
 bool isAvailable();
 void listenOnTCPServer();
