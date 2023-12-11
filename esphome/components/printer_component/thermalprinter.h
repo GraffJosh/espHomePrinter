@@ -73,7 +73,7 @@ bool connected();
 bool hasData();
 char read();
 private:  
-WiFiServer* tcpServer;
+WiFiServer tcpServer;
 WiFiClient tcpClient;
 bool serverStarted = false;
 bool clientConnected = false;

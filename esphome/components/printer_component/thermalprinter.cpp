@@ -312,8 +312,8 @@ void Epson::startTCPServer()
     stopTCPServer();
   }
   Epson::print("Start TCP Server\n");
-  tcpServer = new WiFiServer(8888);
-  tcpServer->begin();
+  tcpServer = WiFiServer(8888);
+  tcpServer.begin();
   Epson::print("TCP Server started\n");
   serverStarted = true;
 }
@@ -325,7 +325,7 @@ bool Epson::connected()
 {
   if(serverStarted)
   {
-    tcpClient = tcpServer->available();
+    tcpClient = tcpServer.available();
     // tcpClient = &active_client;
     if (tcpClient.connected())
     {
@@ -365,8 +365,8 @@ void Epson::listenOnTCPServer()
   Epson::print("begin listen\n");
   while(i < 100)
   {
-    // WiFiClient tcpClient = tcpServer->available();
-    // Epson::print(tcpServer->available());
+    // WiFiClient tcpClient = tcpServer.available();
+    // Epson::print(tcpServer.available());
     // Epson::print("\n");
     // if (!tcpClient)
     // {
@@ -399,7 +399,8 @@ void Epson::listenOnTCPServer()
 void Epson::stopTCPServer()
 {
   Epson::print("Stop TCP Server\n");
-  tcpServer->stop();
+  tcpServer.stop();
+  delete tcpServer;
   serverStarted = false;
 }
 
