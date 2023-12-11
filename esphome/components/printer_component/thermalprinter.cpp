@@ -314,31 +314,33 @@ void Epson::startTCPServer()
 }
 void Epson::listenOnTCPServer()
 {
-  WiFiClient tcpClient = tcpServer->available();
-  Epson::print(tcpServer->available());
-  Epson::print("\n");
-  if (!tcpClient)
+  int i = 0;
+  while(i < 30000)
   {
-    Epson::print(tcpClient.connected());
-  Epson::print("\n");
-    Epson::print("TCP Client didn't connect!");
-  Epson::print("\n");
-  }
-  Epson::print("TCP Client Connected");
-  Epson::print("\n");
-  while (tcpClient.connected())
-  {
-    if(tcpClient.available()>0)
+    WiFiClient tcpClient = tcpServer->available();
+    // Epson::print(tcpServer->available());
+    // Epson::print("\n");
+    // if (!tcpClient)
+    // {
+      // Epson::print(tcpClient.connected());
+      // Epson::print("\nTCP Client didn't connect!\n");
+    // }
+    while (tcpClient.connected())
     {
-      Epson::print( "Message Received!");
-  Epson::print("\n");
+      Epson::print("TCP Client Connected\n");
+      if(tcpClient.available()>0)
+      {
+        Epson::print( "Message Received!");
+        Epson::print("\n");
+      }
+      while (tcpClient.available()>0) {
+        char c = tcpClient.read();
+        Epson::write(c);
+      }
+      return;
+      delay(10);
     }
-    while (tcpClient.available()>0) {
-      char c = tcpClient.read();
-      Epson::write(c);
-    }
-
-    delay(10);
+    i++;
   }
 }
 void Epson::stopTCPServer()
