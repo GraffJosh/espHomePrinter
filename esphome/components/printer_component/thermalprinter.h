@@ -16,6 +16,7 @@
 #define thermalprinter_h
 
 #include "Arduino.h"
+#include <WiFi.h>
 
 #include "esphome/core/component.h"
 #include <HardwareSerial.h>
@@ -65,6 +66,9 @@ void printString(const char* text);
 void logWrapback(const char* text);
 void printImage(const uint8_t* image,int width,int height);
 void printLogo();
+void startTCPServer();
+void listenOnTCPServer();
+void stopTCPServer();
 private:  
 WiFiClient server;
 // HardwareSerial printerSerial;
