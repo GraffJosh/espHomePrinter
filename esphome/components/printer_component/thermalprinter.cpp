@@ -336,22 +336,28 @@ bool Epson::isAvailable()
 // }
 bool Epson::connected()
 {
+    
+  if(serverStarted)
+  {
   // if(!tcpClient)
   // {
     WiFiClient active_client = tcpServer->available();
     tcpClient = &active_client;
   // }
-  if(tcpClient){
-    clientConnected = tcpClient->connected();
-    if (clientConnected)
-    {
-      Epson::print("TCP Client Connected\n\n");
-      //use this var so we don't have to instantiate the client repeatedly
-      clientConnected = true;
-    }else{
-      tcpClient->stop();
-      clientConnected = false;
+    if(tcpClient){
+      clientConnected = tcpClient->connected();
+      if (clientConnected)
+      {
+        Epson::print("TCP Client Connected\n\n");
+        //use this var so we don't have to instantiate the client repeatedly
+        clientConnected = true;
+      }else{
+        tcpClient->stop();
+        clientConnected = false;
+      }
     }
+  }else{
+    clientConnected = false;
   }
 
   return clientConnected;
