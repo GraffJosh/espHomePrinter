@@ -400,7 +400,6 @@ void Epson::stopTCPServer()
 {
   Epson::print("Stop TCP Server\n");
   tcpServer.stop();
-  delete tcpServer;
   serverStarted = false;
 }
 
