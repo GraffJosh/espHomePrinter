@@ -364,6 +364,8 @@ char Epson::read()
   if(tcpClient)
   {
     return tcpClient.read();
+  }else{
+    return "X";
   }
 }
 void Epson::listenOnTCPServer()
