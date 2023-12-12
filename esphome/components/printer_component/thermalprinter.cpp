@@ -397,7 +397,7 @@ char Epson::read()
 {
   return tcpClient.read();
 }
-int Epson::read(const char* line_buffer, size_t buf_size)
+int Epson::read(char * const line_buffer, size_t buf_size)
 {
   int i=0;
   for(; i<buf_size;i++)
