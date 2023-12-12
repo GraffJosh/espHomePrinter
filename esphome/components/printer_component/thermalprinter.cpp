@@ -463,18 +463,21 @@ void Epson::listenOnTCPServer()
   if(DEBUG_ENABLE)
     Epson::print("End listen\n");
 }
-void Epson::stopTCPServer()
+void Epson::disconnectTCPClient()
 {
-  if(DEBUG_ENABLE)
-    Epson::print("Stop TCP Server\n");
   if(tcpClient)
   {
     tcpClient.stop();
     delete &tcpClient;
   }
+  clientConnected = false;
+}
+void Epson::stopTCPServer()
+{
+  if(DEBUG_ENABLE)
+    Epson::print("Stop TCP Server\n");
   tcpServer.stop();
   serverStarted = false;
-  clientConnected = false;
 }
 
 // void Epson::initTCP(Epson printer)

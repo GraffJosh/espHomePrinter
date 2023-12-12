@@ -81,6 +81,7 @@ void printLogo();
 void startTCPServer();
 bool isAvailable();
 void listenOnTCPServer();
+void disconnectTCPClient();
 void stopTCPServer();
 bool connected();
 bool hasData();
