@@ -468,7 +468,7 @@ void Epson::disconnectTCPClient()
   if(tcpClient)
   {
     tcpClient.stop();
-    delete &tcpClient;
+    // delete &tcpClient;
   }
   clientConnected = false;
 }
