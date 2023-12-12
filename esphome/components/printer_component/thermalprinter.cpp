@@ -377,7 +377,7 @@ bool Epson::connected()
         {
           Epson::print("TCP Client Disconnected\n");
           tcpClient.stop(); 
-          delete tcpClient;
+          delete &tcpClient;
         }
         clientConnected = false;
       }
