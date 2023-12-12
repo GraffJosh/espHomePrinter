@@ -242,7 +242,7 @@ int Epson::configureImage(const bool highDensity,const uint32_t width)
 // {
 
 // }
-void Epson::printImageLine(const uint8_t* line_buffer, const int line_length, const bool highDensity)
+void Epson::printImageLine(const char* line_buffer, const int line_length, const bool highDensity)
 {
   //parameters in the ESCPOS lib, these are a uint16 split in 2 denoting the 
   //  width of the line. 
