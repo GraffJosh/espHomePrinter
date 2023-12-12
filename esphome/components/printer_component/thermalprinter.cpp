@@ -244,34 +244,36 @@ int Epson::configureImage(const bool highDensity,const uint32_t width)
 // }
 void Epson::printImageLine(const uint8_t* line)
 {
-// '// Set graphics data: [Function 67] Define the NV graphics data (raster format)
-// '// 128(=8*16) dots wide and 120 dots tall with respect to key code "G1"
-// '// GS ( L   pL  pH   m  fn   a kc1/Kc2  b  xL  xH  yL  yH   c
-//https://download4.epson.biz/sec_pubs/pos/reference_en/escpos/ref_escpos_en/graphics.html
-
-  // if (width != 384 || height > 65635) {
-  //   ESP_LOGD("INFO","Image size error width: %d, Height: %d",width,height);
-  // }
-
-  //Print LSB first bitmap
-  // Epson::write(18);
-  // Epson::write(118);
-  // Epson::write((byte)(currentImageWidth & 255)); 	//currentImageWidth LSB
-  // Epson::write((byte)(currentImageWidth >> 8)); 	//height MSB
-
   //parameters in the ESCPOS lib, these are a uint16 split in 2 denoting the 
   //  width of the line. 
   uint8_t nL = currentImageWidth & 255;
   uint8_t nH = currentImageWidth >> 8;
-  Epson::writeBytes({27, 85, 255});
-  Epson::writeBytes({27, 51, 1});
-  Epson::writeBytes({27, 42, currentImageDensity, nL, nH});
+  Epson::write(27);
+  Epson::write(85);
+  Epson::write(255);
+
+  Epson::write(27);
+  Epson::write(51);
+  Epson::write(1);
+  
+  Epson::write(27);
+  Epson::write(42);
+  Epson::write(currentImageDensity);
+  Epson::write(nL);
+  Epson::write(nH);
   
   Epson::writeBytes(line, currentImageDensity ? width*3:width);
 
-  Epson::writeBytes({13, 10});
-  Epson::writeBytes({27,85,0});
-  Epson::writeBytes({27,51,20});
+  Epson::write(13);
+  Epson::write(10);
+
+  Epson::write(27);
+  Epson::write(85);
+  Epson::write(0);
+
+  Epson::write(27);
+  Epson::write(51);
+  Epson::write(20);
 
 }
 
