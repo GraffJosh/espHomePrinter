@@ -377,6 +377,7 @@ bool Epson::connected()
         {
           Epson::print("TCP Client Disconnected\n");
           tcpClient.stop(); 
+          delete tcpClient;
         }
         clientConnected = false;
       }
@@ -402,12 +403,12 @@ int Epson::read(char * const line_buffer, int buf_size)
   int i=0;
   for(; i<buf_size;i++)
   {
-    if(Epson::hasData())
-    {
+    // if(Epson::hasData())
+    // {
       line_buffer[i] = tcpClient.read();
-    }else{
-      break;
-    }
+    // }else{
+    //   break;
+    // }
   }
   return i;
 }
