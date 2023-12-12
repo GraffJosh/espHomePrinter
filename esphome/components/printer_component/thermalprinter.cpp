@@ -263,15 +263,15 @@ void Epson::printImageLine(const uint8_t* line)
   //  width of the line. 
   uint8_t nL = currentImageWidth & 255;
   uint8_t nH = currentImageWidth >> 8;
-  Epson::writeBytes([27, 85, 255]);
-  Epson::writeBytes([27, 51, 1]);
-  Epson::writeBytes([27, 42, currentImageDensity, nL, nH]);
+  Epson::writeBytes({27, 85, 255});
+  Epson::writeBytes({27, 51, 1});
+  Epson::writeBytes({27, 42, currentImageDensity, nL, nH});
   
   Epson::writeBytes(line, currentImageDensity ? width*3:width);
 
-  Epson::writeBytes([13, 10]);
-  Epson::writeBytes([27,85,0]);
-  Epson::writeBytes([27,51,20]);
+  Epson::writeBytes({13, 10});
+  Epson::writeBytes({27,85,0});
+  Epson::writeBytes({27,51,20});
 
 }
 
