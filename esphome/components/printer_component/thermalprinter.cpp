@@ -242,12 +242,21 @@ int Epson::configureImage(const bool highDensity,const uint32_t width)
 // {
 
 // }
-void Epson::printImageLine(const uint8_t* line)
+void Epson::printImageLine(const uint8_t* line_buffer, const int line_length, const bool highDensity)
 {
   //parameters in the ESCPOS lib, these are a uint16 split in 2 denoting the 
   //  width of the line. 
+  //align the line with our printer size.
+  int current_width = (line_length);
+  currentImageWidth = current_width;
+  if(highDensity)
+  {
+    current_width = (line_length - (line_length % 3));
+    currentImageWidth = current_width / 3;
+  }
   uint8_t nL = currentImageWidth & 255;
   uint8_t nH = currentImageWidth >> 8;
+
   Epson::write(27);
   Epson::write(85);
   Epson::write(255);
@@ -258,11 +267,11 @@ void Epson::printImageLine(const uint8_t* line)
   
   Epson::write(27);
   Epson::write(42);
-  Epson::write(currentImageDensity);
+  Epson::write(highDensity ? 33 : 0);
   Epson::write(nL);
   Epson::write(nH);
   
-  Epson::writeBytes(line, currentImageDensity ? width*3:width);
+  Epson::writeBytes(line, current_width);
 
   Epson::write(13);
   Epson::write(10);
@@ -388,14 +397,18 @@ char Epson::read()
 {
   return tcpClient.read();
 }
-char* Epson::read(size_t buf_size)
+int Epson::read(const char* line_buffer, size_t buf_size)
 {
-  char* result = new char(buf_size);
   for(int i=0; i<buf_size;i++)
   {
-
+    if(Epson.hasData())
+    {
+      line_buffer[i] = tcpClient.read();
+    }else{
+      break;
+    }
   }
-  return tcpClient.read();
+  return i;
 }
 void Epson::listenOnTCPServer()
 {

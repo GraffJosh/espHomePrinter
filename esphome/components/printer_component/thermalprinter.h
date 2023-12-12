@@ -68,7 +68,7 @@ void cut();
 void printString(const char* text);
 void logWrapback(const char* text);
 int configureImage(const bool highDensity,const uint32_t width);
-void printImageLine(const uint8_t* image);
+void printImageLine(const uint8_t* line_buffer, const int line_length,const bool highDensity);
 void printLogo();
 
 // void initTCP(Epson printer);
@@ -85,7 +85,7 @@ void stopTCPServer();
 bool connected();
 bool hasData();
 char read();
-char* read(size_t buf_size);
+int read(const char* line_buffer, size_t buf_size);
 private:  
 WiFiServer tcpServer;
 WiFiClient tcpClient;
