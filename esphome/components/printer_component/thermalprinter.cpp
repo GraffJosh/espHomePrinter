@@ -271,7 +271,7 @@ void Epson::printImageLine(const uint8_t* line_buffer, const int line_length, co
   Epson::write(nL);
   Epson::write(nH);
   
-  Epson::writeBytes(line, current_width);
+  Epson::writeBytes(line_buffer, current_width);
 
   Epson::write(13);
   Epson::write(10);
@@ -399,9 +399,10 @@ char Epson::read()
 }
 int Epson::read(const char* line_buffer, size_t buf_size)
 {
-  for(int i=0; i<buf_size;i++)
+  int i=0;
+  for(; i<buf_size;i++)
   {
-    if(Epson.hasData())
+    if(Epson::hasData())
     {
       line_buffer[i] = tcpClient.read();
     }else{
