@@ -461,6 +461,7 @@ void Epson::stopTCPServer()
   }
   tcpServer.stop();
   serverStarted = false;
+  clientConnected = false;
 }
 
 // void Epson::initTCP(Epson printer)
