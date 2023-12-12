@@ -85,7 +85,7 @@ void stopTCPServer();
 bool connected();
 bool hasData();
 char read();
-int read(char * const line_buffer, size_t buf_size);
+int read(char * const line_buffer, int buf_size);
 private:  
 WiFiServer tcpServer;
 WiFiClient tcpClient;
