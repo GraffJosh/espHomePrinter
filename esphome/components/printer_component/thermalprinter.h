@@ -22,7 +22,7 @@
 #include "esphome/core/component.h"
 #include <AsyncTCP.h>
 #include <HardwareSerial.h>
-
+#define DEBUG_ENABLE false
 namespace esphome {
 namespace thermalprinter {
 static std::vector<AsyncClient*> clients; // a list to hold all clients

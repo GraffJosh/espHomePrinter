@@ -369,13 +369,15 @@ bool Epson::connected()
         //this check effectively oneshots the debug statements
         if(!clientConnected)
         {
-          Epson::print("TCP Client Connected\n");
+          if(DEBUG_ENABLE)
+            Epson::print("TCP Client Connected\n");
           clientConnected = true;
         }
       }else{
         if(clientConnected)
         {
-          Epson::print("TCP Client Disconnected\n");
+          if(DEBUG_ENABLE)
+            Epson::print("TCP Client Disconnected\n");
           tcpClient.stop(); 
         }
         clientConnected = false;
@@ -418,7 +420,10 @@ void Epson::listenOnTCPServer()
     startTCPServer();
   }
   int i = 0;
-  Epson::print("begin listen\n");
+  
+  if(DEBUG_ENABLE)
+    Epson::print("begin listen\n");
+
   while(i < 100)
   {
     // WiFiClient tcpClient = tcpServer.available();
@@ -431,10 +436,13 @@ void Epson::listenOnTCPServer()
     // }
     if (Epson::connected())
     {
-      Epson::print("TCP Client Connected\n\n");
+      
+      if(DEBUG_ENABLE)
+        Epson::print("TCP Client Connected\n\n");
       this->tcpClient.connected();
       this->tcpClient.available();
-      Epson::print("TCP Client is alive\n\n");
+      if(DEBUG_ENABLE)
+        Epson::print("TCP Client is alive\n\n");
 
     }
     if (Epson::connected())
@@ -449,11 +457,14 @@ void Epson::listenOnTCPServer()
     delay(100);
     i++;
   }
-  Epson::print("End listen\n");
+  
+  if(DEBUG_ENABLE)
+    Epson::print("End listen\n");
 }
 void Epson::stopTCPServer()
 {
-  Epson::print("Stop TCP Server\n");
+  if(DEBUG_ENABLE)
+    Epson::print("Stop TCP Server\n");
   if(tcpClient)
   {
     tcpClient.stop();
