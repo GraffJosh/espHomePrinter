@@ -341,10 +341,12 @@ void Epson::startTCPServer()
   {
     stopTCPServer();
   }
-  Epson::print("Start TCP Server\n");
+  if(DEBUG_ENABLE)
+    Epson::print("Start TCP Server\n");
   tcpServer = WiFiServer(8888);
   tcpServer.begin();
-  Epson::print("TCP Server started\n");
+  if(DEBUG_ENABLE)
+    Epson::print("TCP Server started\n");
   serverStarted = true;
 }
 
