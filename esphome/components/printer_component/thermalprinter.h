@@ -68,6 +68,7 @@ void cut();
 void printString(const char* text);
 void logWrapback(const char* text);
 int configureImage(const bool highDensity,const uint32_t width);
+void finishImage();
 void printImageLine(const char* line_buffer, const int line_length,const bool highDensity);
 void printLogo();
 
