@@ -237,11 +237,13 @@ int Epson::configureImage(const bool highDensity,const uint32_t width)
     currentImageDensity = 0;
     return width;
   }
+  Epson::write(27);
+  Epson::write(76);
 }
-// void Epson::appendImageBuffer(const uint8_t* pixels, int length)
-// {
-
-// }
+void Epson::finishImage()
+{
+  Epson::write(12);
+}
 void Epson::printImageLine(const char* line_buffer, const int line_length, const bool highDensity)
 {
   //parameters in the ESCPOS lib, these are a uint16 split in 2 denoting the 
@@ -257,29 +259,36 @@ void Epson::printImageLine(const char* line_buffer, const int line_length, const
   uint8_t nL = currentImageWidth & 255;
   uint8_t nH = currentImageWidth >> 8;
 
+  //enable unidirectional printing
   Epson::write(27);
   Epson::write(85);
   Epson::write(255);
 
+  //set line spacing ?
   Epson::write(27);
   Epson::write(51);
-  Epson::write(1);
+  Epson::write(0);
   
-  Epson::write(27);
-  Epson::write(42);
-  Epson::write(highDensity ? 33 : 0);
-  Epson::write(nL);
-  Epson::write(nH);
+  //prepare for image
+  Epson::write(27);//ESC
+  Epson::write(42);//*
+  Epson::write(highDensity ? 33 : 0);//changes the DPI (see manual)
+  Epson::write(nL);//lower byte of the width
+  Epson::write(nH);//upper byte of the width
   
+  //write the data
   Epson::writeBytes(line_buffer, current_width);
 
+  //newline to kick out the buffer
   Epson::write(13);
   Epson::write(10);
 
+  //reset the unidirectional printing
   Epson::write(27);
   Epson::write(85);
   Epson::write(0);
 
+  //reset the line spacing?
   Epson::write(27);
   Epson::write(51);
   Epson::write(20);
@@ -335,6 +344,13 @@ void Epson::logWrapback(const char* text)
   // ESP_LOGCONFIG(TAG, "wrapback: %s",text);
 }
 
+
+//TCP SERVER CODE.
+//@TODO MOVE THIS TO ANOTHER CUSTOM COMPONENT
+//This code integrates direct control over TCP commands.
+//
+//
+//
 void Epson::startTCPServer()
 {
   if(serverStarted)
@@ -349,7 +365,6 @@ void Epson::startTCPServer()
     Epson::print("TCP Server started\n");
   serverStarted = true;
 }
-
 
 bool Epson::isAvailable()
 {
