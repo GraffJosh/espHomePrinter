@@ -239,6 +239,19 @@ int Epson::configureImage(const bool highDensity,const uint32_t width)
   }
   Epson::write(27);
   Epson::write(76);
+  
+  Epson::write(27);
+  Epson::write(87);
+  Epson::write(0);
+  Epson::write(0);
+  Epson::write(0);
+  Epson::write(0);
+  Epson::write(512);
+  Epson::write(0);
+  Epson::write(512);
+  Epson::write(0);
+  
+  
 }
 void Epson::finishImage()
 {
