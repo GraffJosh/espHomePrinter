@@ -227,43 +227,40 @@ void Epson::cut() {
 /// </param>
 int Epson::configureImage(const bool highDensity,const uint32_t width,const uint32_t height)
 {
+
   currentImageHeight = height;
-
-
-  // currentImageHeight = current_Height;
-  // if(highDensity)
-  // {
-  //   currentImageHeight = current_Height / 3;
-  // }
-
-  uint8_t nL = currentImageHeight & 255;
-  uint8_t nH = currentImageHeight >> 8;
-
-  
-  // Epson::write(27);
-  // Epson::write(76);
-  
-  // Epson::write(27);
-  // Epson::write(87);
-  // Epson::write(0);
-  // Epson::write(0);
-  // Epson::write(0);
-  // Epson::write(0);
-
-  // Epson::write(0);
-  // Epson::write(2);
-  // Epson::write(nL);
-  // Epson::write(nH);
-  
-  
   if (highDensity)
   {
     currentImageDensity = 33;
-    return width*3;
+    currentImageWidth = width*3;
   }else{
     currentImageDensity = 0;
-    return width;
+    currentImageWidth = width;
   }
+  uint8_t dxL = currentImageWidth & 255;
+  uint8_t dxH = currentImageWidth >> 8;
+  uint8_t dyL = currentImageHeight & 255;
+  uint8_t dyH = currentImageHeight >> 8;
+
+  
+  Epson::write(27);
+  Epson::write(76);
+  
+  Epson::write(27);
+  Epson::write(87);
+  Epson::write(0);
+  Epson::write(0);
+  Epson::write(0);
+  Epson::write(0);
+
+  Epson::write(0);
+  Epson::write(1536);
+  Epson::write(nL);
+  Epson::write(nH);
+  
+  
+  return configurationWidth;
+  
 }
 void Epson::finishImage()
 {
