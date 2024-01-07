@@ -230,16 +230,17 @@ int Epson::configureImage(const bool highDensity,const uint32_t width,const uint
 
   currentImageHeight = height;
   currentImageWidth = width;
+  int configurationWidth = 0;
   if (highDensity)
   {
     currentImageDensity = 33;
-    currentImageWidth = width*3;
+    configurationWidth = width*3;
   }else{
     currentImageDensity = 0;
-    currentImageWidth = width;
+    configurationWidth = width;
   }
-  uint8_t dxL = currentImageWidth & 255;
-  uint8_t dxH = currentImageWidth >> 8;
+  uint8_t dxL = configurationWidth & 255;
+  uint8_t dxH = configurationWidth >> 8;
   uint8_t dyL = currentImageHeight & 255;
   uint8_t dyH = currentImageHeight >> 8;
 
