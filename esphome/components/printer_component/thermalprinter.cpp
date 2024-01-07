@@ -240,8 +240,8 @@ int Epson::configureImage(const bool highDensity,const uint32_t width,const uint
   uint8_t nH = currentImageHeight >> 8;
 
   
-  Epson::write(27);
-  Epson::write(76);
+  // Epson::write(27);
+  // Epson::write(76);
   
   // Epson::write(27);
   // Epson::write(87);
