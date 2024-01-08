@@ -291,7 +291,7 @@ void Epson::printImageLine(const char* line_buffer, const int line_length, const
   //set line spacing ?
   Epson::write(27);
   Epson::write(51);
-  Epson::write(0);
+  Epson::write(24);
   
   //prepare for image
   Epson::write(27);//ESC
@@ -315,10 +315,11 @@ void Epson::printImageLine(const char* line_buffer, const int line_length, const
   //reset the line spacing?
   Epson::write(27);
   Epson::write(51);
-  Epson::write(20);
+  Epson::write(24);
 
   //newline
   Epson::write(13);
+  Epson::write(10);
 }
 
 void Epson::speed(int inSpeed)
