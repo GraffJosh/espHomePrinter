@@ -236,28 +236,32 @@ int Epson::configureImage(const bool highDensity,const uint32_t width,const uint
   {
     currentImageDensity = 33;
     configurationWidth = width*3;
-    configurationHeight = height*2;
+    configurationHeight = height*3;
   }else{
     currentImageDensity = 0;
     configurationWidth = width;
     configurationHeight = height;
   }
+  configurationHeight = 1662; //testing with max size.
   uint8_t dxL = configurationWidth & 255;
   uint8_t dxH = configurationWidth >> 8;
   uint8_t dyL = configurationHeight & 255;
   uint8_t dyH = configurationHeight >> 8;
 
-  
+  //trigger page mode.
   Epson::write(27);
   Epson::write(76);
   
+  //begin set page size
   Epson::write(27);
   Epson::write(87);
+  //start at 0,0
   Epson::write(0);
   Epson::write(0);
   Epson::write(0);
   Epson::write(0);
 
+  //end at W, H (this is the split word paradigm again. Not sure about height configuration?)
   Epson::write(dxL);
   Epson::write(dxH);
   Epson::write(dyL);
