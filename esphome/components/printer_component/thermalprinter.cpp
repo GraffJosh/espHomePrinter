@@ -317,6 +317,8 @@ void Epson::printImageLine(const char* line_buffer, const int line_length, const
   Epson::write(51);
   Epson::write(20);
 
+  //newline
+  Epson::write(13);
 }
 
 void Epson::speed(int inSpeed)
