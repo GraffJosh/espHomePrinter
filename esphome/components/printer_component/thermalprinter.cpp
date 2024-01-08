@@ -225,7 +225,7 @@ void Epson::cut() {
 /// <param name='image'>
 /// Image to print.
 /// </param>
-int Epson::configureImage(const bool highDensity,const uint32_t width,const uint32_t height)
+int Epson::configureImagePage(const bool highDensity,const uint32_t width,const uint32_t height)
 {
 
   currentImageHeight = height;
@@ -236,13 +236,12 @@ int Epson::configureImage(const bool highDensity,const uint32_t width,const uint
   {
     currentImageDensity = 33;
     configurationWidth = width*3;
-    configurationHeight = height*3;
+    configurationHeight = height*2;
   }else{
     currentImageDensity = 0;
     configurationWidth = width;
     configurationHeight = height;
   }
-  configurationHeight = 1662; //testing with max size.
   uint8_t dxL = configurationWidth & 255;
   uint8_t dxH = configurationWidth >> 8;
   uint8_t dyL = configurationHeight & 255;
@@ -267,6 +266,27 @@ int Epson::configureImage(const bool highDensity,const uint32_t width,const uint
   Epson::write(dyL);
   Epson::write(dyH);
   
+  
+  return configurationWidth;
+  
+}
+int Epson::configureImage(const bool highDensity,const uint32_t width,const uint32_t height)
+{
+
+  currentImageHeight = height;
+  currentImageWidth = width;
+  int configurationWidth = 0;
+  int configurationHeight = 0;
+  if (highDensity)
+  {
+    currentImageDensity = 33;
+    configurationWidth = width*3;
+    configurationHeight = height*3;
+  }else{
+    currentImageDensity = 0;
+    configurationWidth = width;
+    configurationHeight = height;
+  }
   
   return configurationWidth;
   
