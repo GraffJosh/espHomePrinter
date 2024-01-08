@@ -345,11 +345,11 @@ void Epson::printImageLine(const char* line_buffer, const int line_length, const
   Epson::write(24);
 
   //newline
-  // if(imagePageMode)
-  // {
+  if(imagePageMode)
+  {
     Epson::write(13);
     Epson::write(10);
-  // }
+  }
 }
 
 void Epson::speed(int inSpeed)
