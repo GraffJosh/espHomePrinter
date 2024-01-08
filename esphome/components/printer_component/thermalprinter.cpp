@@ -231,18 +231,21 @@ int Epson::configureImage(const bool highDensity,const uint32_t width,const uint
   currentImageHeight = height;
   currentImageWidth = width;
   int configurationWidth = 0;
+  int configurationHeight = 0;
   if (highDensity)
   {
     currentImageDensity = 33;
     configurationWidth = width*3;
+    configurationHeight = height*2;
   }else{
     currentImageDensity = 0;
     configurationWidth = width;
+    configurationHeight = height;
   }
   uint8_t dxL = configurationWidth & 255;
   uint8_t dxH = configurationWidth >> 8;
-  uint8_t dyL = currentImageHeight & 255;
-  uint8_t dyH = currentImageHeight >> 8;
+  uint8_t dyL = configurationHeight & 255;
+  uint8_t dyH = configurationHeight >> 8;
 
   
   Epson::write(27);
