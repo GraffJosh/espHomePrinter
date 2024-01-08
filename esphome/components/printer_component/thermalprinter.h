@@ -94,6 +94,7 @@ WiFiServer tcpServer;
 WiFiClient tcpClient;
 bool serverStarted = false;
 bool clientConnected = false;
+bool imagePageMode = false;
 uint32_t currentImageWidth = 0;
 uint32_t currentImageHeight = 0;
 int currentImageDensity = 1;

@@ -227,7 +227,7 @@ void Epson::cut() {
 /// </param>
 int Epson::configureImagePage(const bool highDensity,const uint32_t width,const uint32_t height)
 {
-
+  imagePageMode = true;
   currentImageHeight = height;
   currentImageWidth = width;
   int configurationWidth = 0;
@@ -272,7 +272,7 @@ int Epson::configureImagePage(const bool highDensity,const uint32_t width,const 
 }
 int Epson::configureImage(const bool highDensity,const uint32_t width,const uint32_t height)
 {
-
+  imagePageMode = false;
   currentImageHeight = height;
   currentImageWidth = width;
   int configurationWidth = 0;
@@ -318,7 +318,7 @@ void Epson::printImageLine(const char* line_buffer, const int line_length, const
   //set line spacing ?
   Epson::write(27);
   Epson::write(51);
-  Epson::write(24);
+  Epson::write(imagePageMode ? 24:0);
   
   //prepare for image
   Epson::write(27);//ESC
@@ -345,8 +345,11 @@ void Epson::printImageLine(const char* line_buffer, const int line_length, const
   Epson::write(24);
 
   //newline
-  Epson::write(13);
-  Epson::write(10);
+  // if(imagePageMode)
+  // {
+    Epson::write(13);
+    Epson::write(10);
+  // }
 }
 
 void Epson::speed(int inSpeed)
