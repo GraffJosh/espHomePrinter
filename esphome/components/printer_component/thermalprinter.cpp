@@ -59,6 +59,7 @@ void Epson::letterSpacing(int spacing){
   Epson::write(spacing);    
 }
 void Epson::printLogo(int logoNum){
+  int logoIndex = 48+logoNum;
   //29  40  76  6  0  48  85  kc1  kc2  x  y
   Epson::write(29);  
   Epson::write(40);
@@ -68,7 +69,7 @@ void Epson::printLogo(int logoNum){
   Epson::write(48);  
   Epson::write(69);  
   Epson::write(48);  
-  Epson::write(48+logoNum);
+  Epson::write(logoIndex);
   Epson::write(1);
   Epson::write(1);    
 }
