@@ -60,17 +60,17 @@ void Epson::letterSpacing(int spacing){
 }
 void Epson::printLogo(){
   //29  40  76  6  0  48  85  kc1  kc2  x  y
-  Epson::write(GS);  
-  Epson::write(0x28);
-  Epson::write(0x4C);  
+  Epson::write(29);  
+  Epson::write(40);
+  Epson::write(76);  
   Epson::write(6);  
   Epson::write(0);  
   Epson::write(48);  
-  Epson::write(85);  
+  Epson::write(69);  
   Epson::write(48);  
   Epson::write(48);
-  Epson::write(0);
-  Epson::write(0);    
+  Epson::write(1);
+  Epson::write(1);    
 }
 // Print and feed n lines
 // prints the data in the print buffer and feeds n lines
