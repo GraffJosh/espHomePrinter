@@ -71,7 +71,7 @@ int configureImagePage(const bool highDensity,const uint32_t width,const uint32_
 int configureImage(const bool highDensity,const uint32_t width,const uint32_t height);
 void finishImage();
 void printImageLine(const char* line_buffer, const int line_length,const bool highDensity);
-void printLogo();
+void printLogo(int logoNum);
 
 // void initTCP(Epson printer);
 // void handleNewClient(void* arg, AsyncClient* client);
