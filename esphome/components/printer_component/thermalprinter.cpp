@@ -436,7 +436,7 @@ bool Epson::connected()
   {
     if(!clientConnected)
     {
-      tcpClient = tcpServer.available();
+      tcpClient = tcpServer.accept();
     }
     if(tcpClient)
     {
@@ -467,7 +467,7 @@ bool Epson::hasData()
 {
   if(tcpClient)
   {
-    return (tcpClient.available());
+    return (tcpClient.accept());
   }else{
     return false;
   }
@@ -517,7 +517,7 @@ void Epson::listenOnTCPServer()
       if(DEBUG_ENABLE)
         Epson::print("TCP Client Connected\n\n");
       this->tcpClient.connected();
-      this->tcpClient.available();
+      this->tcpClient.accept();
       if(DEBUG_ENABLE)
         Epson::print("TCP Client is alive\n\n");
 
