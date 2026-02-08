@@ -467,7 +467,7 @@ bool Epson::hasData()
 {
   if(tcpClient)
   {
-    return (tcpClient.accept());
+    return (tcpClient.available());
   }else{
     return false;
   }
@@ -517,7 +517,7 @@ void Epson::listenOnTCPServer()
       if(DEBUG_ENABLE)
         Epson::print("TCP Client Connected\n\n");
       this->tcpClient.connected();
-      this->tcpClient.accept();
+      this->tcpClient.available();
       if(DEBUG_ENABLE)
         Epson::print("TCP Client is alive\n\n");
 
