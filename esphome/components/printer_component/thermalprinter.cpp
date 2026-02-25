@@ -157,7 +157,7 @@ void Epson::underlineOn() {
   Epson::write(0x21);    
   Epson::write(128);
 }
-// Select Font A (standard) or Font B (smaller)
+
 void Epson::fontA() {
   Epson::write(ESC);
   Epson::write('M');
