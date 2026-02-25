@@ -123,118 +123,88 @@ void Epson::characterSet(uint8_t n){
 }
 
 
-void Epson::doubleHeightOn(){
-  Epson::write(ESC);    
-  Epson::write(0x21);  
-  Epson::write(16);
+
+
+// Internal helper to write the current text mode to printer
+void Epson::updateTextMode() {
+  Epson::write(ESC);
+  Epson::write('!');
+  Epson::write(currentTextMode);
 }
 
-void Epson::doubleHeightOff(){
-  Epson::write(ESC);  
-  Epson::write(0x21);    
-  Epson::write(0);
+// --- Character mode functions ---
+
+void Epson::boldOn() {
+  currentTextMode |= 0x08;  // Bit 3 = bold
+  updateTextMode();
 }
 
-void Epson::boldOn(){
-  Epson::write(ESC);  
-  Epson::write(0x21);    
-  Epson::write(8);
+void Epson::boldOff() {
+  currentTextMode &= ~0x08; // Clear bit 3
+  updateTextMode();
 }
 
-void Epson::boldOff(){
-  Epson::write(ESC);  
-  Epson::write(0x21);    
-  Epson::write(0);
+void Epson::doubleHeightOn() {
+  currentTextMode |= 0x10;  // Bit 4 = double-height
+  updateTextMode();
+}
+
+void Epson::doubleHeightOff() {
+  currentTextMode &= ~0x10; // Clear bit 4
+  updateTextMode();
+}
+
+void Epson::doubleWidthOn() {
+  currentTextMode |= 0x20;  // Bit 5 = double-width
+  updateTextMode();
+}
+
+void Epson::doubleWidthOff() {
+  currentTextMode &= ~0x20; // Clear bit 5
+  updateTextMode();
+}
+
+void Epson::underlineOn() {
+  currentTextMode |= 0x80;  // Bit 7 = underline
+  updateTextMode();
 }
 
 void Epson::underlineOff() {
-  Epson::write(ESC);  
-  Epson::write(0x21);    
-  Epson::write(0);
+  currentTextMode &= ~0x80; // Clear bit 7
+  updateTextMode();
 }
-void Epson::underlineOn() {
-  Epson::write(ESC);  
-  Epson::write(0x21);    
-  Epson::write(128);
+
+void Epson::emphasizedOn() {
+  currentTextMode |= 0x01;  // Bit 0 = emphasized (ESC E)
+  updateTextMode();
+}
+
+void Epson::emphasizedOff() {
+  currentTextMode &= ~0x01; // Clear bit 0
+  updateTextMode();
 }
 
 void Epson::fontA() {
   Epson::write(ESC);
   Epson::write('M');
-  Epson::write(0);  // 0 = Font A
+  Epson::write(0);  // Font A
 }
 
 void Epson::fontB() {
   Epson::write(ESC);
   Epson::write('M');
-  Epson::write(1);  // 1 = Font B
+  Epson::write(1);  // Font B
 }
 
-// Enable emphasized mode (slightly bolder than bold)
-void Epson::emphasizedOn() {
-  Epson::write(ESC);
-  Epson::write('E');
-  Epson::write(1); // 1 = on
-}
-
-void Epson::emphasizedOff() {
-  Epson::write(ESC);
-  Epson::write('E');
-  Epson::write(0); // 0 = off
-}
-
-// Double-width text
-void Epson::doubleWidthOn() {
-  // ESC ! n, set bit 4 (0x20)
-  Epson::write(ESC);
-  Epson::write('!');
-  Epson::write(0x20);
-}
-
-void Epson::doubleWidthOff() {
-  // Reset all special text modes
-  Epson::write(ESC);
-  Epson::write('!');
-  Epson::write(0x00);
-}
-
-// Double-size text (height + width)
-void Epson::doubleSizeOn() {
-  // ESC ! n, set bits 3 and 4 (0x10 + 0x20 = 0x30)
-  Epson::write(ESC);
-  Epson::write('!');
-  Epson::write(0x30);
-}
-
-void Epson::doubleSizeOff() {
-  Epson::write(ESC);
-  Epson::write('!');
-  Epson::write(0x00);
-}
-
-// Small text (half height, half width)
-void Epson::smallTextOn() {
-  // ESC ! n, set bit 0x01
-  Epson::write(ESC);
-  Epson::write('!');
-  Epson::write(0x01);
-}
-
-void Epson::smallTextOff() {
-  Epson::write(ESC);
-  Epson::write('!');
-  Epson::write(0x00);
-}
-
-// Italic mode (if printer supports)
+// Italics (if supported)
 void Epson::italicOn() {
   Epson::write(ESC);
-  Epson::write(0x34);  // ESC 4 = Italic on
+  Epson::write(0x34);  // ESC 4
 }
 
 void Epson::italicOff() {
   Epson::write(ESC);
-  Epson::write(0x35);  // ESC 5 = Italic off
+  Epson::write(0x35);  // ESC 5
 }
 
 // Turn white/black reverse printing mode on/off
