@@ -125,13 +125,13 @@ void Epson::characterSet(uint8_t n){
 // Helper: update a single bit in currentMode and send ESC ! n
 void Epson::updateTextMode(uint8_t mask, bool enable) {
     if (enable) {
-        currentMode |= mask;
+        currentTextMode |= mask;
     } else {
-        currentMode &= ~mask;
+        currentTextMode &= ~mask;
     }
     Epson::write(ESC);
     Epson::write('!');
-    Epson::write(currentMode);
+    Epson::write(currentTextMode);
 }
 
 // --- ESC/POS text mode functions using updateTextMode ---

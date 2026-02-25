@@ -42,8 +42,6 @@ void dump_config() override;
 void start();
 
 int getStatus();
-void boldOff();
-void boldOn();
 void characterSet(uint8_t n);
 void defaultLineSpacing();
 //Text Mode Functions
@@ -74,8 +72,6 @@ void letterSpacing(int spacing);
 void lineSpacing(uint8_t n);
 void reverseOff();
 void reverseOn();
-void underlineOff();
-void underlineOn();
 void justifyLeft();
 void justifyCenter();
 void justifyRight();
