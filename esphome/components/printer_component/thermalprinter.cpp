@@ -232,48 +232,45 @@ void Epson::printBarcode(uint8_t m, uint8_t n) {
 }
 
 void Epson::printQRCode(const std::string &text, uint8_t size) {
-  // 1. Set the module size (size: 1-16)
-  Epson::write(GS);   // 0x1D
-  Epson::write('(');  // 0x28
-  Epson::write('k');  // 0x6B
-  Epson::write(3);    // pL
-  Epson::write(0);    // pH
-  Epson::write(49);   // cn
-  Epson::write(67);   // fn = module size
-  Epson::write(size); // size of module (dots)
+  // Clamp module size 1–16
+  if (size < 1) size = 1;
+  if (size > 16) size = 16;
 
-  // 2. Set error correction level (48 = level L, 49=M, 50=Q, 51=H)
-  Epson::write(GS);
-  Epson::write('(');
-  Epson::write('k');
-  Epson::write(3);
-  Epson::write(0);
-  Epson::write(49);   // cn
-  Epson::write(69);   // fn = error correction
-  Epson::write(50);   // 48=L, 49=M, 50=Q, 51=H (here Q for 25%)
+  uint16_t len = text.length();
 
-  // 3. Store data in QR buffer
-  uint16_t len = text.length() + 3;
-  Epson::write(GS);
-  Epson::write('(');
-  Epson::write('k');
-  Epson::write(len & 0xFF);       // pL
-  Epson::write(len >> 8);         // pH
-  Epson::write(49);               // cn
-  Epson::write(80);               // fn = store data
-  Epson::write(48);               // m
-  Epson::writeBytes(text.c_str(), text.length()); // text data
+  // ---- Select QR Model 2 ----
+  Epson::writeBytes("\x1D\x28\x6B\x04\x00\x31\x41\x32\x00", 9);
 
-  // 4. Print the QR code
-  Epson::write(GS);
-  Epson::write('(');
-  Epson::write('k');
-  Epson::write(3);
-  Epson::write(0);
-  Epson::write(49);   // cn
-  Epson::write(81);   // fn = print QR
-  Epson::write(48);   // m
+  // ---- Set QR Module Size ----
+  Epson::write(0x1D);
+  Epson::write(0x28);
+  Epson::write(0x6B);
+  Epson::write(0x03);     // pL
+  Epson::write(0x00);     // pH
+  Epson::write(0x31);     // cn
+  Epson::write(0x43);     // fn = module size
+  Epson::write(size);
 
+  // ---- Set Error Correction (M = 15%) ----
+  Epson::writeBytes("\x1D\x28\x6B\x03\x00\x31\x45\x31", 8);
+
+  // ---- Store Data in QR Buffer ----
+  uint16_t store_len = len + 3;
+  uint8_t pL = store_len & 0xFF;
+  uint8_t pH = (store_len >> 8) & 0xFF;
+
+  Epson::write(0x1D);
+  Epson::write(0x28);
+  Epson::write(0x6B);
+  Epson::write(pL);
+  Epson::write(pH);
+  Epson::write(0x31);     // cn
+  Epson::write(0x50);     // fn = store data
+  Epson::write(0x30);     // m
+  Epson::writeBytes(text.data(), len);
+
+  // ---- Print QR Code ----
+  Epson::writeBytes("\x1D\x28\x6B\x03\x00\x31\x51\x30", 8);
 }
 
 void Epson::cut() {
