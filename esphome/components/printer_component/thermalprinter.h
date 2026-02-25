@@ -46,6 +46,7 @@ void boldOff();
 void boldOn();
 void characterSet(uint8_t n);
 void defaultLineSpacing();
+void updateTextMode();
 void doubleHeightOff();
 void doubleHeightOn();
 void fontA();
