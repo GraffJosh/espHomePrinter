@@ -122,67 +122,45 @@ void Epson::characterSet(uint8_t n){
   Epson::write(n);  
 }
 
-
-
-
-// Internal helper to write the current text mode to printer
-void Epson::updateTextMode() {
-  Epson::write(ESC);
-  Epson::write('!');
-  Epson::write(currentTextMode);
+// Helper: update a single bit in currentMode and send ESC ! n
+void Epson::updateTextMode(uint8_t mask, bool enable) {
+    if (enable) {
+        currentMode |= mask;
+    } else {
+        currentMode &= ~mask;
+    }
+    Epson::write(ESC);
+    Epson::write('!');
+    Epson::write(currentMode);
 }
 
-// --- Character mode functions ---
+// --- ESC/POS text mode functions using updateTextMode ---
+// Bold / Emphasized
+void Epson::boldOn()        { updateTextMode(0x08, true); }
+void Epson::boldOff()       { updateTextMode(0x08, false); }
+void Epson::emphasizedOn()  { updateTextMode(0x08, true); } // same as bold if printer merges
+void Epson::emphasizedOff() { updateTextMode(0x08, false); }
 
-void Epson::boldOn() {
-  currentTextMode |= 0x08;  // Bit 3 = bold
-  updateTextMode();
-}
+// Underline
+void Epson::underlineOn()   { updateTextMode(0x80, true); } // bit 7
+void Epson::underlineOff()  { updateTextMode(0x80, false); }
 
-void Epson::boldOff() {
-  currentTextMode &= ~0x08; // Clear bit 3
-  updateTextMode();
-}
+// Double height / width
+void Epson::doubleHeightOn()   { updateTextMode(0x10, true); } // bit 4
+void Epson::doubleHeightOff()  { updateTextMode(0x10, false); }
+void Epson::doubleWidthOn()    { updateTextMode(0x20, true); } // bit 5
+void Epson::doubleWidthOff()   { updateTextMode(0x20, false); }
+void Epson::doubleSizeOn()     { updateTextMode(0x10 | 0x20, true); } // bits 4+5
+void Epson::doubleSizeOff()    { updateTextMode(0x10 | 0x20, false); }
 
-void Epson::doubleHeightOn() {
-  currentTextMode |= 0x10;  // Bit 4 = double-height
-  updateTextMode();
-}
+// Italic (if supported)
+void Epson::italicOn()        { updateTextMode(0x40, true); }  // bit 6
+void Epson::italicOff()       { updateTextMode(0x40, false); }
 
-void Epson::doubleHeightOff() {
-  currentTextMode &= ~0x10; // Clear bit 4
-  updateTextMode();
-}
+// Small text (some printers use Font B bit)
+void Epson::smallTextOn()     { updateTextMode(0x01, true); }  // bit 0 = Font B
+void Epson::smallTextOff()    { updateTextMode(0x01, false); }
 
-void Epson::doubleWidthOn() {
-  currentTextMode |= 0x20;  // Bit 5 = double-width
-  updateTextMode();
-}
-
-void Epson::doubleWidthOff() {
-  currentTextMode &= ~0x20; // Clear bit 5
-  updateTextMode();
-}
-
-void Epson::underlineOn() {
-  currentTextMode |= 0x80;  // Bit 7 = underline
-  updateTextMode();
-}
-
-void Epson::underlineOff() {
-  currentTextMode &= ~0x80; // Clear bit 7
-  updateTextMode();
-}
-
-void Epson::emphasizedOn() {
-  currentTextMode |= 0x01;  // Bit 0 = emphasized (ESC E)
-  updateTextMode();
-}
-
-void Epson::emphasizedOff() {
-  currentTextMode &= ~0x01; // Clear bit 0
-  updateTextMode();
-}
 
 void Epson::fontA() {
   Epson::write(ESC);
@@ -194,17 +172,6 @@ void Epson::fontB() {
   Epson::write(ESC);
   Epson::write('M');
   Epson::write(1);  // Font B
-}
-
-// Italics (if supported)
-void Epson::italicOn() {
-  Epson::write(ESC);
-  Epson::write(0x34);  // ESC 4
-}
-
-void Epson::italicOff() {
-  Epson::write(ESC);
-  Epson::write(0x35);  // ESC 5
 }
 
 // Turn white/black reverse printing mode on/off
@@ -262,6 +229,51 @@ void Epson::printBarcode(uint8_t m, uint8_t n) {
   Epson::write(0x6B);    
   Epson::write(m);
   Epson::write(n);
+}
+
+void Epson::printQRCode(const std::string &text, uint8_t size) {
+  // 1. Set the module size (size: 1-16)
+  Epson::write(GS);   // 0x1D
+  Epson::write('(');  // 0x28
+  Epson::write('k');  // 0x6B
+  Epson::write(3);    // pL
+  Epson::write(0);    // pH
+  Epson::write(49);   // cn
+  Epson::write(67);   // fn = module size
+  Epson::write(size); // size of module (dots)
+
+  // 2. Set error correction level (48 = level L, 49=M, 50=Q, 51=H)
+  Epson::write(GS);
+  Epson::write('(');
+  Epson::write('k');
+  Epson::write(3);
+  Epson::write(0);
+  Epson::write(49);   // cn
+  Epson::write(69);   // fn = error correction
+  Epson::write(50);   // 48=L, 49=M, 50=Q, 51=H (here Q for 25%)
+
+  // 3. Store data in QR buffer
+  uint16_t len = text.length() + 3;
+  Epson::write(GS);
+  Epson::write('(');
+  Epson::write('k');
+  Epson::write(len & 0xFF);       // pL
+  Epson::write(len >> 8);         // pH
+  Epson::write(49);               // cn
+  Epson::write(80);               // fn = store data
+  Epson::write(48);               // m
+  Epson::writeBytes(text.c_str(), text.length()); // text data
+
+  // 4. Print the QR code
+  Epson::write(GS);
+  Epson::write('(');
+  Epson::write('k');
+  Epson::write(3);
+  Epson::write(0);
+  Epson::write(49);   // cn
+  Epson::write(81);   // fn = print QR
+  Epson::write(48);   // m
+
 }
 
 void Epson::cut() {
