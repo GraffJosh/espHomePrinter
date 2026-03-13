@@ -161,6 +161,11 @@ void Epson::italicOff()       { updateTextMode(0x40, false); }
 void Epson::smallTextOn()     { updateTextMode(0x01, true); }  // bit 0 = Font B
 void Epson::smallTextOff()    { updateTextMode(0x01, false); }
 
+void Epson::codePage(uint8_t n) {
+  Epson::write(ESC);   // ESC
+  Epson::write('t');   // 't' command
+  Epson::write(n);     // code page number
+}
 
 void Epson::fontA() {
   Epson::write(ESC);

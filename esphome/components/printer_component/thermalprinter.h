@@ -63,6 +63,7 @@ void italicOff();
 void smallTextOn();
 void smallTextOff();
 //
+void codePage(uint8_t n);
 void fontA();
 void fontB();
 void feed(uint8_t n);
