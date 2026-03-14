@@ -34,7 +34,7 @@ public:
   Epson();
   
   
-void printText(const std::string &utf8_text);
+void printText(const char *utf8_text);
 size_t write(uint8_t c);
 size_t writeBytes(const char* inData,int length);
 
