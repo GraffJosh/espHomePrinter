@@ -7,7 +7,97 @@
 static const char LF = 0xA; // print buffer and line feed  
 static const char ESC = 0x1B;
 static const char GS = 0x1D;
-    
+#include <cstdint>
+#include <unordered_map>
+
+// Fallback for unmapped chars
+constexpr uint8_t CP437_FALLBACK = ' ';
+
+// UTF-8 → CP437 mapping table for common extended chars
+static const std::unordered_map<uint16_t, uint8_t> UTF8_TO_CP437 = {
+    // Accented letters
+    {0x00C0, 0x80}, // À
+    {0x00C1, 0x81}, // Á
+    {0x00C2, 0x82}, // Â
+    {0x00C3, 0x83}, // Ã
+    {0x00C4, 0x84}, // Ä
+    {0x00C5, 0x85}, // Å
+    {0x00C7, 0x87}, // Ç
+    {0x00C8, 0x88}, // È
+    {0x00C9, 0x89}, // É
+    {0x00CA, 0x8A}, // Ê
+    {0x00CB, 0x8B}, // Ë
+    {0x00CC, 0x8C}, // Ì
+    {0x00CD, 0x8D}, // Í
+    {0x00CE, 0x8E}, // Î
+    {0x00CF, 0x8F}, // Ï
+    {0x00D1, 0xA5}, // Ñ
+    {0x00D2, 0x92}, // Ò
+    {0x00D3, 0x93}, // Ó
+    {0x00D4, 0x94}, // Ô
+    {0x00D5, 0x95}, // Õ
+    {0x00D6, 0x9F}, // Ö
+    {0x00D9, 0x97}, // Ù
+    {0x00DA, 0x98}, // Ú
+    {0x00DB, 0x99}, // Û
+    {0x00DC, 0x9E}, // Ü
+    {0x00DF, 0xE1}, // ß
+    {0x00E0, 0x85}, // à
+    {0x00E1, 0xA0}, // á
+    {0x00E2, 0x83}, // â
+    {0x00E3, 0xA3}, // ã
+    {0x00E4, 0x84}, // ä
+    {0x00E5, 0x86}, // å
+    {0x00E7, 0x87}, // ç
+    {0x00E8, 0x88}, // è
+    {0x00E9, 0x82}, // é
+    {0x00EA, 0x8A}, // ê
+    {0x00EB, 0x8B}, // ë
+    {0x00EC, 0x8C}, // ì
+    {0x00ED, 0x8D}, // í
+    {0x00EE, 0x8E}, // î
+    {0x00EF, 0x8F}, // ï
+    {0x00F1, 0xA4}, // ñ
+    {0x00F2, 0x92}, // ò
+    {0x00F3, 0x93}, // ó
+    {0x00F4, 0x94}, // ô
+    {0x00F5, 0x95}, // õ
+    {0x00F6, 0x94}, // ö
+    {0x00F8, 0xF8}, // ° (degree symbol)
+    {0x00FA, 0x98}, // ú
+    {0x00FC, 0x81}, // ü
+    {0x00FF, 0x9F}, // ÿ
+
+    // Box-drawing (partial, extend as needed)
+    {0x2500, 0xC4}, // ─
+    {0x2502, 0xB3}, // │
+    {0x251C, 0xC3}, // ├
+    {0x2524, 0xB4}, // ┤
+    {0x252C, 0xC2}, // ┬
+    {0x2534, 0xC1}, // ┴
+    {0x253C, 0xC5}, // ┼
+    {0x2550, 0xCD}, // ═
+    {0x2551, 0xBA}, // ║
+    {0x2554, 0xC9}, // ╔
+    {0x2557, 0xBB}, // ╗
+    {0x255A, 0xC8}, // ╚
+    {0x255D, 0xBC}, // ╝
+};
+
+// Minimal UTF-8 decoder for 1-byte characters only (extend for full UTF-8 sequences)
+uint8_t utf8_to_cp437(uint32_t codepoint) {
+    // ASCII passthrough
+    if (codepoint <= 0x7F)
+        return (uint8_t)codepoint;
+
+    // Look up in table
+    auto it = UTF8_TO_CP437.find(codepoint);
+    if (it != UTF8_TO_CP437.end())
+        return it->second;
+
+    // fallback
+    return CP437_FALLBACK;
+}
 namespace esphome {
 namespace thermalprinter {
 
@@ -436,6 +526,14 @@ void Epson::speed(int inSpeed)
       inSpeed = 10;
     }
     Epson::write((uint8_t) inSpeed);
+}
+
+void Epson::printText(const std::string &utf8_text) {
+  for (size_t i = 0; i < utf8_text.length(); i++) {
+      uint8_t c = utf8_text[i];
+      uint8_t b = utf8_to_cp437(c);  // map UTF-8 to CP437 byte
+      Serial1.write(b);
+  }
 }
 
 size_t Epson::write(uint8_t c) {
