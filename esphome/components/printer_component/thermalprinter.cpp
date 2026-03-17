@@ -691,16 +691,6 @@ void Epson::execute_token(std::string token)
       feed(n);
   }
 
-  // Horizontal rule
-//   if (token == "hr")
-//   {
-//     int w = id(text_width).state;
-//     std::string line(w, '-');
-//     printText(line.c_str());
-//     printText("\r\n");
-//     return;
-//   }
-
   // Reset all formatting
   if (token == "reset")
   {
@@ -714,6 +704,10 @@ void Epson::execute_token(std::string token)
     apply_format("whiteonblack", false);
     justifyCenter();
   }
+}
+
+uint8_t Epson::getCurrentGlyphWidth() {
+  return glyphWidth(currentTextMode);
 }
 
 void Epson::printTextWrap(const std::string &text) {

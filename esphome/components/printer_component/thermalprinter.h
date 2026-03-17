@@ -102,6 +102,7 @@ void italicOff();
 void smallTextOn();
 void smallTextOff();
 
+uint8_t getCurrentGlyphWidth();
 void apply_format(const std::string &token, bool enable);
 void execute_token(std::string token);
 //
@@ -166,7 +167,6 @@ private:
     uint8_t glyphWidth(GlyphType g) {
         uint8_t w = 1;
         if (static_cast<uint8_t>(g & GlyphType::DoubleWidth)) w *= 2;
-        if (static_cast<uint8_t>(g & GlyphType::DoubleHeight)) w *= 2;
         if (static_cast<uint8_t>(g & GlyphType::Small)) w = 1;
         return w;
     }
