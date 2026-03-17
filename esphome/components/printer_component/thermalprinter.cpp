@@ -621,10 +621,8 @@ void Epson::apply_format(const std::string &token, bool enable)
   else if (token == "doublesize")
   {
     if(enable){
-        doubleSizeActive = true;
         doubleSizeOn();
     }else{
-        doubleSizeActive = false;
         doubleSizeOff();
     }
   }

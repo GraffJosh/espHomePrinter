@@ -25,10 +25,7 @@
 #define DEBUG_ENABLE false
 namespace esphome {
 namespace thermalprinter {
-  struct CharGlyph {
-    char c;
-    GlyphType mode;
-};
+  
   enum class GlyphType : uint8_t {
     Normal       = 0x00, // no formatting
     Small        = 0x01, // bit 0 = Font B
@@ -38,7 +35,11 @@ namespace thermalprinter {
     DoubleWidth  = 0x20, // bit 5
     Italic       = 0x40, // bit 6
     Underline    = 0x80  // bit 7
-};
+  };
+  struct CharGlyph {
+      char c;
+      GlyphType mode;
+  };
 
 // Bitwise helpers
 inline GlyphType operator|(GlyphType a, GlyphType b) {
