@@ -160,16 +160,8 @@ private:
   GlyphType currentTextMode = GlyphType::Normal;  // keeps track of ESC ! mode bits
 
 
-  
-    std::vector<GlyphString>  lineBuffer_;
-    std::vector<GlyphString>  wordBuffer_;
     uint8_t currLineWidth_ = 0;
     size_t lastSpaceIndex_ = std::string::npos;
-
-    // Escape parsing state
-    bool parsing_escape_ = false;
-    bool maybe_escape_ = false;
-    std::string escape_buffer_;
 
     uint8_t glyphWidth(GlyphType g) {
         uint8_t w = 1;

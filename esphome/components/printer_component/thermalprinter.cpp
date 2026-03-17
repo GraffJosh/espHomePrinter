@@ -718,10 +718,10 @@ void Epson::execute_token(std::string token)
 
 void Epson::printTextWrap(const std::string &text) {
   const uint8_t lineSlots = 42; // normal line width
-  std::string lineBuffer;        // current line
-  std::string wordBuffer;        // current word
-  uint8_t currLineWidth = 0;     // current width of line
-  size_t lastSpaceIndex = std::string::npos;
+  static std::string lineBuffer;        // current line
+  static std::string wordBuffer;        // current word
+  static uint8_t currLineWidth = 0;     // current width of line
+  static size_t lastSpaceIndex = std::string::npos;
 
   // --- Escape parsing state ---
   static bool parsing_escape = false;
