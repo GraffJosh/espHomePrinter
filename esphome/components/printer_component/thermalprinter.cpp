@@ -721,7 +721,7 @@ void Epson::printTextWrap(const std::string &text) {
 
   auto flushLine = [&]() {
       if (!lineBuffer_.empty()) {
-          printText(lineBuffer_.c_str());
+          printText(lineBuffer_.str().c_str());
           lineBuffer_.clear();
           currLineWidth_ = 0;
           lastSpaceIndex_ = std::string::npos;
@@ -785,7 +785,7 @@ void Epson::printTextWrap(const std::string &text) {
           if (lastSpaceIndex_ != std::string::npos) {
               // Wrap at last space
               size_t wrapPos = lastSpaceIndex_ + 1;
-              printText(lineBuffer_.substr(0, wrapPos).c_str());
+              printText(lineBuffer_.substr(0, wrapPos).str().c_str());
               printText("\r\n");
 
               std::string remainder = lineBuffer_.substr(wrapPos) + wordBuffer_;
@@ -801,7 +801,7 @@ void Epson::printTextWrap(const std::string &text) {
               }
           } else {
               // Force wrap at current char
-              printText(lineBuffer_.c_str());
+              printText(lineBuffer_.str().c_str());
               printText("\r\n");
               lineBuffer_ = wordBuffer_;
               currLineWidth_ = 0;
