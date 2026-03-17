@@ -61,45 +61,6 @@ inline bool hasFlag(GlyphType value, GlyphType flag) {
   return (static_cast<uint8_t>(value) & static_cast<uint8_t>(flag)) != 0;
 }
 
-struct CharGlyph {
-    char c;
-    GlyphType mode;
-};
-
-struct GlyphString {
-    std::vector<CharGlyph> data;
-
-    // push a char with current mode
-    void push_back(char c, GlyphType mode) {
-        data.push_back({c, mode});
-    }
-
-    // operator+= for convenience
-    GlyphString &operator+=(char c) {
-        push_back(c, GlyphType::Normal); // default mode, or current mode
-        return *this;
-    }
-
-    // append another GlyphString
-    GlyphString &operator+=(const GlyphString &other) {
-        data.insert(data.end(), other.data.begin(), other.data.end());
-        return *this;
-    }
-
-    // return a "string" version ignoring glyph modes
-    std::string str() const {
-        std::string s;
-        s.reserve(data.size());
-        for (auto &cg : data) s += cg.c;
-        return s;
-    }
-
-    size_t size() const { return data.size(); }
-    void clear() { data.clear(); }
-    CharGlyph &operator[](size_t idx) { return data[idx]; }
-    const CharGlyph &operator[](size_t idx) const { return data[idx]; }
-};
-
 
 
 static std::vector<AsyncClient*> clients; // a list to hold all clients
@@ -217,9 +178,14 @@ private:
         if (static_cast<uint8_t>(g & GlyphType::Small)) w = 1;
         return w;
     }
-
+    
+    // Helper: calculate projected width of a word under currentTextMode
+    uint8_t glyphWidth(const std::string &word) {
+        uint8_t w = 0;
+        for (char c : word) w += glyphWidth(currentTextMode);
+        return w;
+    }
     void flushLine();
-    void printChar(const GlyphString &cg);
 };
 
 }
