@@ -71,7 +71,6 @@ public:
   
   Epson();
   
-void printTextWrap(const std::string &utf8_text);
 void printText(const char *utf8_text);
 size_t write(uint8_t c);
 size_t writeBytes(const char* inData,int length);
@@ -166,7 +165,7 @@ private:
 
     uint8_t glyphWidth(GlyphType g) {
         uint8_t w = 1;
-        if (static_cast<uint8_t>(g & GlyphType::DoubleWidth)) w *= 2;
+        if (static_cast<uint8_t>(g & GlyphType::DoubleWidth)) w *= 2.1;
         if (static_cast<uint8_t>(g & GlyphType::Small)) w = 1;
         return w;
     }
@@ -177,7 +176,6 @@ private:
         for (char c : word) w += glyphWidth(currentTextMode);
         return w;
     }
-    void flushLine();
 };
 
 }
