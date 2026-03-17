@@ -147,7 +147,7 @@ bool imagePageMode = false;
 uint32_t currentImageWidth = 0;
 uint32_t currentImageHeight = 0;
 int currentImageDensity = 1;
-uint8_t currentTextMode = 0;  // keeps track of ESC ! mode bits
+GlyphType currentTextMode = 0;  // keeps track of ESC ! mode bits
 
 // HardwareSerial printerSerial;
 
