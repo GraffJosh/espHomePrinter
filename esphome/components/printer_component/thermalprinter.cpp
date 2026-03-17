@@ -729,83 +729,110 @@ inline uint8_t glyphWidth(GlyphType textMode) {
   
   return width;
 }
-
 void Epson::printTextWrap(const std::string &text) {
-  std::string lineBuffer;   // Current line buffer
-  std::string wordBuffer;   // Current word buffer
-  uint8_t currLineWidth = 0;
   const uint8_t lineSlots = 42; // base line width
-  size_t lastSpaceIndex = std::string::npos;
 
   auto flushLine = [&]() {
-      if (!lineBuffer.empty()) {
-          printText(lineBuffer.c_str());
-          lineBuffer.clear();
-          currLineWidth = 0;
-          lastSpaceIndex = std::string::npos;
+      if (!lineBuffer_.empty()) {
+          printText(lineBuffer_.c_str());
+          lineBuffer_.clear();
+          currLineWidth_ = 0;
+          lastSpaceIndex_ = std::string::npos;
       }
   };
 
   for (size_t i = 0; i < text.size(); ++i) {
       char c = text[i];
 
-      // explicit newline: just send it directly
+      // Escape parsing
+      if (parsing_escape_) {
+          if (c == '}') {
+              flushLine();
+              execute_token(escape_buffer_);
+              escape_buffer_.clear();
+              parsing_escape_ = false;
+          } else {
+              escape_buffer_ += c;
+          }
+          continue;
+      }
+
+      if (c == '{') {
+          if (maybe_escape_) {
+              wordBuffer_ += '{';
+              maybe_escape_ = false;
+          } else {
+              maybe_escape_ = true;
+          }
+          continue;
+      }
+
+      if (maybe_escape_) {
+          parsing_escape_ = true;
+          escape_buffer_.clear();
+          escape_buffer_ += c;
+          maybe_escape_ = false;
+          continue;
+      }
+
+      // Explicit newline
       if (c == '\n') {
-          lineBuffer += c;
+          lineBuffer_ += c;
           flushLine();
           continue;
       }
 
-      // Add char to current word buffer
-      wordBuffer += c;
+      // Add char to current word
+      wordBuffer_ += c;
 
-      // Track last space/hyphen for word wrapping
+      // Track last space or hyphen for word wrapping
       if (c == ' ' || c == '-') {
-          lastSpaceIndex = lineBuffer.size() + wordBuffer.size() - 1;
+          lastSpaceIndex_ = lineBuffer_.size() + wordBuffer_.size() - 1;
       }
 
-      // Calculate projected width of line if we add this word
-      uint8_t projectedWidth = currLineWidth;
-      for (char wc : wordBuffer) projectedWidth += glyphWidth(currentTextMode);
+      // Projected line width
+      uint8_t projectedWidth = currLineWidth_;
+      for (char wc : wordBuffer_) projectedWidth += glyphWidth(currentTextMode);
 
-      // If the word would overflow the line
       if (projectedWidth > lineSlots) {
-          if (lastSpaceIndex != std::string::npos) {
+          if (lastSpaceIndex_ != std::string::npos) {
               // Wrap at last space
-              size_t wrapPos = lastSpaceIndex + 1;
-              printText(lineBuffer.substr(0, wrapPos).c_str());
+              size_t wrapPos = lastSpaceIndex_ + 1;
+              printText(lineBuffer_.substr(0, wrapPos).c_str());
               printText("\r\n");
 
-              // Move remaining chars to new line
-              std::string remainder = lineBuffer.substr(wrapPos) + wordBuffer;
-              lineBuffer = remainder;
+              std::string remainder = lineBuffer_.substr(wrapPos) + wordBuffer_;
+              lineBuffer_ = remainder;
 
-              // Recalculate current line width
-              currLineWidth = 0;
-              for (char rc : lineBuffer) currLineWidth += glyphWidth(currentTextMode);
+              currLineWidth_ = 0;
+              for (char rc : lineBuffer_) currLineWidth_ += glyphWidth(currentTextMode);
 
-              wordBuffer.clear();
-              lastSpaceIndex = std::string::npos;
-              for (size_t j = 0; j < lineBuffer.size(); ++j) {
-                  if (lineBuffer[j] == ' ' || lineBuffer[j] == '-') lastSpaceIndex = j;
+              wordBuffer_.clear();
+              lastSpaceIndex_ = std::string::npos;
+              for (size_t j = 0; j < lineBuffer_.size(); ++j) {
+                  if (lineBuffer_[j] == ' ' || lineBuffer_[j] == '-') lastSpaceIndex_ = j;
               }
           } else {
-              // No space: force wrap at current char
-              printText(lineBuffer.c_str());
+              // Force wrap at current char
+              printText(lineBuffer_.c_str());
               printText("\r\n");
-              lineBuffer = wordBuffer;
-              currLineWidth = 0;
-              for (char rc : lineBuffer) currLineWidth += glyphWidth(currentTextMode);
-              wordBuffer.clear();
-              lastSpaceIndex = std::string::npos;
+              lineBuffer_ = wordBuffer_;
+              currLineWidth_ = 0;
+              for (char rc : lineBuffer_) currLineWidth_ += glyphWidth(currentTextMode);
+              wordBuffer_.clear();
+              lastSpaceIndex_ = std::string::npos;
           }
       } else if (c == ' ' || c == '-') {
-          // Word fits: flush it to line buffer
-          lineBuffer += wordBuffer;
-          currLineWidth = projectedWidth;
-          wordBuffer.clear();
+          lineBuffer_ += wordBuffer_;
+          currLineWidth_ = projectedWidth;
+          wordBuffer_.clear();
       }
   }
+
+  // Flush remaining text
+  lineBuffer_ += wordBuffer_;
+  if (!lineBuffer_.empty()) flushLine();
+}
 
   // Flush remaining text
   lineBuffer += wordBuffer;

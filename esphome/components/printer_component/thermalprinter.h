@@ -144,17 +144,26 @@ bool hasData();
 char read();
 int read(char * const line_buffer, int buf_size);
 private:  
-WiFiServer tcpServer;
-WiFiClient tcpClient;
-bool serverStarted = false;
-bool clientConnected = false;
-bool imagePageMode = false;
-uint32_t currentImageWidth = 0;
-uint32_t currentImageHeight = 0;
-int currentImageDensity = 1;
-GlyphType currentTextMode = GlyphType::Normal;  // keeps track of ESC ! mode bits
+  WiFiServer tcpServer;
+  WiFiClient tcpClient;
+  bool serverStarted = false;
+  bool clientConnected = false;
+  bool imagePageMode = false;
+  uint32_t currentImageWidth = 0;
+  uint32_t currentImageHeight = 0;
+  int currentImageDensity = 1;
+  GlyphType currentTextMode = GlyphType::Normal;  // keeps track of ESC ! mode bits
 
-// HardwareSerial printerSerial;
+
+  
+  std::string lineBuffer_;
+  std::string wordBuffer_;
+  uint8_t currLineWidth_;
+  size_t lastSpaceIndex_;
+  bool parsing_escape_ = false;
+  bool maybe_escape_ = false;
+  std::string escape_buffer_;
+  // HardwareSerial printerSerial;
 
 };
 
