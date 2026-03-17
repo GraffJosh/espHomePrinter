@@ -265,7 +265,7 @@ void Epson::characterSet(uint8_t n){
   Epson::write(n);  
 }
 
-// Helper: update a single bit in currentMode and send ESC ! n
+// Helper: update a single bit in currentTextMode and send ESC ! n
 void Epson::updateTextMode(GlyphType mask, bool enable) {
     if (enable) {
         currentTextMode |= mask;
@@ -581,6 +581,145 @@ void Epson::speed(int inSpeed)
     Epson::write((uint8_t) inSpeed);
 }
 
+// =========================
+// Apply formatting (ESPHome switches)
+// =========================
+inline void apply_format(const std::string &token, bool enable)
+{
+  if (token == "bold")
+  {
+    if(enable){
+        boldOn();
+    }else{
+        boldOff();
+    }
+  }
+  else if (token == "italic")
+  {
+    if(enable){
+        italicOn();
+    }else{
+        italicOff();
+    }
+  }
+  else if (token == "underline")
+  {
+    if(enable){
+        underlineOn();
+    }else{
+        underlineOff();
+    }
+  }
+  else if (token == "doubleheight")
+  {
+    if(enable){
+        doubleHeightOn();
+    }else{
+        doubleHeightOff();
+    }
+  }
+  else if (token == "doublesize")
+  {
+    if(enable){
+        doubleSizeActive = true;
+        doubleSizeOn();
+    }else{
+        doubleSizeActive = false;
+        doubleSizeOff();
+    }
+  }
+  else if (token == "small")
+  {
+    if(enable){
+        fontB();
+    }else{
+        fontA();
+    }
+  }
+  else if (token == "emphasized")
+  {
+    if(enable){
+        emphasizedOn();
+    }else{
+        emphasizedOff();
+    }
+  }
+  else if (token == "whiteonblack")
+  {
+    if(enable){
+        reverseOn();
+    }else{
+        reverseOff();
+    }
+  }
+}
+
+// =========================
+// Execute a token command
+// Supports {bold}, {/bold}, {center}, {feed:3}, {hr}, {reset}
+// =========================
+inline void execute_token(std::string token)
+{
+  if (token.empty()) return;
+
+  bool disable = false;
+
+  // check for closing token like {/bold}
+  if (token[0] == '/')
+  {
+    disable = true;
+    token = token.substr(1);
+  }
+
+  // Formatting switches
+  if (token == "bold" || token == "italic" || token == "underline" ||
+      token == "doubleheight" || token == "doublesize" ||
+      token == "small" || token == "emphasized" ||
+      token == "whiteonblack")
+  {
+    apply_format(token, !disable);
+    return;
+  }
+
+  // Alignment
+  if (token == "center") { justifyCenter(); return; }
+  if (token == "right")  { justifyRight(); return; }
+  if (token == "left")   { justifyLeft(); return; }
+
+  // Feed lines, e.g., {feed:3}
+  if (token.rfind("feed:", 0) == 0)
+  {
+    int n = atoi(token.substr(5).c_str());
+      feed(n);
+  }
+
+  // Horizontal rule
+//   if (token == "hr")
+//   {
+//     int w = id(text_width).state;
+//     std::string line(w, '-');
+//     printText(line.c_str());
+//     printText("\r\n");
+//     return;
+//   }
+
+  // Reset all formatting
+  if (token == "reset")
+  {
+    apply_format("bold", false);
+    apply_format("italic", false);
+    apply_format("underline", false);
+    apply_format("doubleheight", false);
+    apply_format("doublesize", false);
+    apply_format("small", false);
+    apply_format("emphasized", false);
+    apply_format("whiteonblack", false);
+    justifyCenter();
+  }
+}
+
+
+
 inline uint8_t glyphWidth(GlyphType textMode) {
   uint8_t width = 1;
 
@@ -591,49 +730,45 @@ inline uint8_t glyphWidth(GlyphType textMode) {
   return width;
 }
 
+void Epson::printTextWrap(const std::string &text) {
+  std::string lineBuffer;   // Current line buffer
+  std::string wordBuffer;   // Current word buffer
+  uint8_t currLineWidth = 0;
+  const uint8_t lineSlots = 42; // base line width
+  size_t lastSpaceIndex = std::string::npos;
 
-void Epson::printTextWrap(const char* str) {
-  std::string lineBuffer;        // Current line buffer
-  std::string wordBuffer;        // Current word buffer
-  uint8_t currLineWidth = 0;     // Width of line so far in character slots
-  uint8_t lineSlots = 42;        // Normal line width in slots
-  size_t lastSpaceIndex = std::string::npos; // Last space/hyphen in lineBuffer
-
-  while (*str) {
-      const char* prev = str;
-      uint32_t cp = decode_utf8(str);
-      uint8_t out = unicode_to_cp437(cp);
-      char c = (char)out;
-
-      uint8_t w = glyphWidth(currentTextMode); // width of this character
-
-      // Handle explicit newline
-      if (c == '\n') {
-          lineBuffer += wordBuffer;
+  auto flushLine = [&]() {
+      if (!lineBuffer.empty()) {
           printText(lineBuffer.c_str());
-          lineBuffer += c;              // append newline to buffer
-          // printText("\r\n");
           lineBuffer.clear();
-          wordBuffer.clear();
           currLineWidth = 0;
           lastSpaceIndex = std::string::npos;
+      }
+  };
+
+  for (size_t i = 0; i < text.size(); ++i) {
+      char c = text[i];
+
+      // explicit newline: just send it directly
+      if (c == '\n') {
+          lineBuffer += c;
+          flushLine();
           continue;
       }
 
-      // Append to current word
+      // Add char to current word buffer
       wordBuffer += c;
 
-      // Update last space/hyphen position
+      // Track last space/hyphen for word wrapping
       if (c == ' ' || c == '-') {
           lastSpaceIndex = lineBuffer.size() + wordBuffer.size() - 1;
       }
 
-      // Check if adding this word exceeds line width
+      // Calculate projected width of line if we add this word
       uint8_t projectedWidth = currLineWidth;
-      for (char wc : wordBuffer) {
-          projectedWidth += glyphWidth(currentTextMode); // per char
-      }
+      for (char wc : wordBuffer) projectedWidth += glyphWidth(currentTextMode);
 
+      // If the word would overflow the line
       if (projectedWidth > lineSlots) {
           if (lastSpaceIndex != std::string::npos) {
               // Wrap at last space
@@ -641,36 +776,38 @@ void Epson::printTextWrap(const char* str) {
               printText(lineBuffer.substr(0, wrapPos).c_str());
               printText("\r\n");
 
-              // Move remaining to new line
+              // Move remaining chars to new line
               std::string remainder = lineBuffer.substr(wrapPos) + wordBuffer;
               lineBuffer = remainder;
+
+              // Recalculate current line width
               currLineWidth = 0;
               for (char rc : lineBuffer) currLineWidth += glyphWidth(currentTextMode);
 
               wordBuffer.clear();
               lastSpaceIndex = std::string::npos;
-              for (size_t i = 0; i < lineBuffer.size(); i++) {
-                  if (lineBuffer[i] == ' ' || lineBuffer[i] == '-') lastSpaceIndex = i;
+              for (size_t j = 0; j < lineBuffer.size(); ++j) {
+                  if (lineBuffer[j] == ' ' || lineBuffer[j] == '-') lastSpaceIndex = j;
               }
           } else {
-              // No space found, force wrap at current char
+              // No space: force wrap at current char
               printText(lineBuffer.c_str());
               printText("\r\n");
               lineBuffer = wordBuffer;
               currLineWidth = 0;
-              for (char wc : lineBuffer) currLineWidth += glyphWidth(currentTextMode);
+              for (char rc : lineBuffer) currLineWidth += glyphWidth(currentTextMode);
               wordBuffer.clear();
               lastSpaceIndex = std::string::npos;
           }
       } else if (c == ' ' || c == '-') {
-          // Safe to flush word
+          // Word fits: flush it to line buffer
           lineBuffer += wordBuffer;
           currLineWidth = projectedWidth;
           wordBuffer.clear();
       }
   }
 
-  // Flush remaining buffers
+  // Flush remaining text
   lineBuffer += wordBuffer;
   if (!lineBuffer.empty()) printText(lineBuffer.c_str());
 }
