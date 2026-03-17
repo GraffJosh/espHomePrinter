@@ -36,11 +36,6 @@ namespace thermalprinter {
     Italic       = 0x40, // bit 6
     Underline    = 0x80  // bit 7
   };
-  struct CharGlyph {
-      char c;
-      GlyphType mode;
-  };
-
 // Bitwise helpers
 inline GlyphType operator|(GlyphType a, GlyphType b) {
     return static_cast<GlyphType>(static_cast<uint8_t>(a) | static_cast<uint8_t>(b));
@@ -65,6 +60,43 @@ inline GlyphType operator~(GlyphType& g) {
 inline bool hasFlag(GlyphType value, GlyphType flag) {
   return (static_cast<uint8_t>(value) & static_cast<uint8_t>(flag)) != 0;
 }
+
+struct GlyphString {
+    std::vector<CharGlyph> data;
+
+    // push a char with current mode
+    void push_back(char c, GlyphType mode) {
+        data.push_back({c, mode});
+    }
+
+    // operator+= for convenience
+    GlyphString &operator+=(char c) {
+        push_back(c, GlyphType::Normal); // default mode, or current mode
+        return *this;
+    }
+
+    // append another GlyphString
+    GlyphString &operator+=(const GlyphString &other) {
+        data.insert(data.end(), other.data.begin(), other.data.end());
+        return *this;
+    }
+
+    // return a "string" version ignoring glyph modes
+    std::string str() const {
+        std::string s;
+        s.reserve(data.size());
+        for (auto &cg : data) s += cg.c;
+        return s;
+    }
+
+    size_t size() const { return data.size(); }
+    void clear() { data.clear(); }
+    CharGlyph &operator[](size_t idx) { return data[idx]; }
+    const CharGlyph &operator[](size_t idx) const { return data[idx]; }
+};
+
+
+
 static std::vector<AsyncClient*> clients; // a list to hold all clients
 
 // public uart::UARTDevice, 
@@ -163,8 +195,8 @@ private:
 
 
   
-    std::vector<CharGlyph> lineBuffer_;
-    std::vector<CharGlyph> wordBuffer_;
+    std::vector<GlyphString  lineBuffer_;
+    std::vector<GlyphString  wordBuffer_;
     uint8_t currLineWidth_ = 0;
     size_t lastSpaceIndex_ = std::string::npos;
 
@@ -182,7 +214,7 @@ private:
     }
 
     void flushLine();
-    void printChar(const CharGlyph &cg);
+    void printChar(const GlyphString &cg);
 };
 
 }

@@ -716,20 +716,6 @@ void Epson::execute_token(std::string token)
   }
 }
 
-
-void Epson::flushLine() {
-  for (auto &cg : lineBuffer_) printChar(cg);
-  lineBuffer_.clear();
-  currLineWidth_ = 0;
-  lastSpaceIndex_ = std::string::npos;
-}
-
-void Epson::printChar(const CharGlyph &cg) {
-  // Apply current formatting
-  updateTextMode(cg.mode, true);  // assumes updateTextMode handles GlyphType properly
-  write(cg.c);
-  updateTextMode(cg.mode, false); // optional: reset if needed
-}
 void Epson::printTextWrap(const std::string &text) {
   const uint8_t lineSlots = 42;
 
