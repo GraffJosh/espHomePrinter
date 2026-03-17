@@ -719,23 +719,21 @@ void Epson::execute_token(std::string token)
 void Epson::printTextWrap(const std::string &text) {
   const uint8_t lineSlots = 42; // normal line width
 
-  static std::string lineBuffer;        // current line
-  static std::string wordBuffer;        // current word
-  static uint8_t currLineWidth = 0;     // current width of line
+  // Persistent buffers
+  static std::string lineBuffer;
+  static std::string wordBuffer;
+  static uint16_t currLineWidth = 0; // changed to uint16_t to avoid overflow
   static size_t lastSpaceIndex = std::string::npos;
 
-  // Escape parsing state
+  // Escape sequence state
   static bool parsing_escape = false;
   static bool maybe_escape = false;
   static std::string escape_buffer;
 
-  // Flush line buffer safely
+  // Flush line buffer
   auto flushLine = [&]() {
       if (!lineBuffer.empty()) {
           printText(lineBuffer.c_str());
-          // printText("\r\n");
-
-          // Clear buffers and reset state
           lineBuffer.clear();
           wordBuffer.clear();
           currLineWidth = 0;
@@ -759,7 +757,7 @@ void Epson::printTextWrap(const std::string &text) {
       // Possible start of escape
       if (c == '{') {
           if (maybe_escape) {
-              wordBuffer += '{';
+              wordBuffer += '{'; // literal {{
               maybe_escape = false;
           } else {
               maybe_escape = true;
@@ -786,38 +784,47 @@ void Epson::printTextWrap(const std::string &text) {
       // Add char to current word
       wordBuffer += c;
 
-      // Track last space/hyphen for wrapping
+      // Track last space or hyphen for wrapping
       if (c == ' ' || c == '-') lastSpaceIndex = lineBuffer.size() + wordBuffer.size() - 1;
 
-      uint8_t projectedWidth = currLineWidth + glyphWidth(wordBuffer);
+      uint16_t projectedWidth = currLineWidth + glyphWidth(wordBuffer);
 
       // --- Word wrapping ---
-      if (projectedWidth > lineSlots && lastSpaceIndex != std::string::npos) {
-          // Wrap at last space
-          size_t wrapPos = lastSpaceIndex + 1;
-          printText(lineBuffer.substr(0, wrapPos).c_str());
-          printText("\r\n");
+      if (projectedWidth > lineSlots) {
+          if (lastSpaceIndex != std::string::npos) {
+              // Wrap at last space
+              size_t wrapPos = lastSpaceIndex + 1;
+              printText(lineBuffer.substr(0, wrapPos).c_str());
+              printText("\r\n");
 
-          std::string remainder = lineBuffer.substr(wrapPos) + wordBuffer;
-          lineBuffer = remainder;
-          currLineWidth = glyphWidth(lineBuffer);
-          wordBuffer.clear();
+              std::string remainder = lineBuffer.substr(wrapPos) + wordBuffer;
+              lineBuffer = remainder;
+              currLineWidth = glyphWidth(lineBuffer);
+              wordBuffer.clear();
 
-          // Recompute last space in remainder
-          lastSpaceIndex = std::string::npos;
-          for (size_t j = 0; j < lineBuffer.size(); ++j)
-              if (lineBuffer[j] == ' ' || lineBuffer[j] == '-') lastSpaceIndex = j;
-      }
-      else if (c == ' ' || c == '-') {
-          // Word fits: flush to line
+              // Recompute last space
+              lastSpaceIndex = std::string::npos;
+              for (size_t j = 0; j < lineBuffer.size(); ++j)
+                  if (lineBuffer[j] == ' ' || lineBuffer[j] == '-') lastSpaceIndex = j;
+          } else {
+              // Long word with no space — don't wrap, let printer handle
+              // Just flush existing line if needed
+              if (!lineBuffer.empty()) {
+                  printText(lineBuffer.c_str());
+                  lineBuffer.clear();
+                  currLineWidth = 0;
+              }
+              // Leave wordBuffer as-is
+          }
+      } else if (c == ' ' || c == '-') {
+          // Word fits — flush it to line buffer
           lineBuffer += wordBuffer;
           currLineWidth = projectedWidth;
           wordBuffer.clear();
       }
-      // If projectedWidth > lineSlots and no space exists, do nothing — printer handles long words
   }
 
-  // Flush any remaining text at end
+  // Flush any remaining text
   lineBuffer += wordBuffer;
   if (!lineBuffer.empty()) flushLine();
 }
