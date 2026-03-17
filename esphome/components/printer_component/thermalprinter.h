@@ -61,6 +61,11 @@ inline bool hasFlag(GlyphType value, GlyphType flag) {
   return (static_cast<uint8_t>(value) & static_cast<uint8_t>(flag)) != 0;
 }
 
+struct CharGlyph {
+    char c;
+    GlyphType mode;
+};
+
 struct GlyphString {
     std::vector<CharGlyph> data;
 
@@ -195,8 +200,8 @@ private:
 
 
   
-    std::vector<GlyphString  lineBuffer_;
-    std::vector<GlyphString  wordBuffer_;
+    std::vector<GlyphString>  lineBuffer_;
+    std::vector<GlyphString>  wordBuffer_;
     uint8_t currLineWidth_ = 0;
     size_t lastSpaceIndex_ = std::string::npos;
 
