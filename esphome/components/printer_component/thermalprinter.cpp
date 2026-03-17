@@ -730,18 +730,24 @@ void Epson::printChar(const CharGlyph &cg) {
   write(cg.c);
   updateTextMode(cg.mode, false); // optional: reset if needed
 }
-
 void Epson::printTextWrap(const std::string &text) {
   const uint8_t lineSlots = 42;
 
-  for (size_t i = 0; i < text.size(); ++i) {
-      char c = text[i];
+  auto flushLine = [&]() {
+      if (!lineBuffer_.empty()) {
+          printText(lineBuffer_.c_str());
+          lineBuffer_.clear();
+          currLineWidth_ = 0;
+          lastSpaceIndex_ = std::string::npos;
+      }
+  };
 
-      // Handle escape parsing
+  for (char c : text) {
+      // Escape parsing
       if (parsing_escape_) {
           if (c == '}') {
               flushLine();
-              execute_token(escape_buffer_);
+              execute_token(escape_buffer_);  // handle {token} or {/token}
               escape_buffer_.clear();
               parsing_escape_ = false;
           } else {
@@ -750,11 +756,10 @@ void Epson::printTextWrap(const std::string &text) {
           continue;
       }
 
-      // Start escape
+      // Start of potential escape
       if (c == '{') {
           if (maybe_escape_) {
-              // literal {{
-              wordBuffer_.push_back({ '{', currentTextMode });
+              wordBuffer_ += '{';  // literal {{
               maybe_escape_ = false;
           } else {
               maybe_escape_ = true;
@@ -772,67 +777,64 @@ void Epson::printTextWrap(const std::string &text) {
 
       // Explicit newline: just pass it through
       if (c == '\n') {
-          wordBuffer_.push_back({ '\n', currentTextMode });
+          lineBuffer_ += c;
           flushLine();
           continue;
       }
 
-      // Add character to word buffer
-      wordBuffer_.push_back({ c, currentTextMode });
+      // Add character to current word buffer
+      wordBuffer_ += c;
 
-      // Track last space/hyphen
+      // Track last space/hyphen for wrapping
       if (c == ' ' || c == '-') {
           lastSpaceIndex_ = lineBuffer_.size() + wordBuffer_.size() - 1;
       }
 
-      // Calculate projected width if we add word
+      // Projected width
       uint8_t projectedWidth = currLineWidth_;
-      for (auto &cg : wordBuffer_) projectedWidth += glyphWidth(cg.mode);
+      for (char wc : wordBuffer_) projectedWidth += glyphWidth(currentTextMode);
 
+      // Wrap if needed
       if (projectedWidth > lineSlots) {
           if (lastSpaceIndex_ != std::string::npos) {
               // Wrap at last space
               size_t wrapPos = lastSpaceIndex_ + 1;
-              for (size_t j = 0; j < wrapPos; ++j) printChar(lineBuffer_[j]);
+              printText(lineBuffer_.substr(0, wrapPos).c_str());
               printText("\r\n");
 
-              std::vector<CharGlyph> remainder;
-              remainder.insert(remainder.end(), lineBuffer_.begin() + wrapPos, lineBuffer_.end());
-              remainder.insert(remainder.end(), wordBuffer_.begin(), wordBuffer_.end());
+              std::string remainder = lineBuffer_.substr(wrapPos) + wordBuffer_;
               lineBuffer_ = remainder;
 
               currLineWidth_ = 0;
-              for (auto &cg : lineBuffer_) currLineWidth_ += glyphWidth(cg.mode);
+              for (char rc : lineBuffer_) currLineWidth_ += glyphWidth(currentTextMode);
 
               wordBuffer_.clear();
               lastSpaceIndex_ = std::string::npos;
               for (size_t j = 0; j < lineBuffer_.size(); ++j) {
-                  if (lineBuffer_[j].c == ' ' || lineBuffer_[j].c == '-') lastSpaceIndex_ = j;
+                  if (lineBuffer_[j] == ' ' || lineBuffer_[j] == '-') lastSpaceIndex_ = j;
               }
           } else {
               // Force wrap at current char
-              for (auto &cg : lineBuffer_) printChar(cg);
+              printText(lineBuffer_.c_str());
               printText("\r\n");
-
               lineBuffer_ = wordBuffer_;
               currLineWidth_ = 0;
-              for (auto &cg : lineBuffer_) currLineWidth_ += glyphWidth(cg.mode);
+              for (char rc : lineBuffer_) currLineWidth_ += glyphWidth(currentTextMode);
               wordBuffer_.clear();
               lastSpaceIndex_ = std::string::npos;
           }
       } else if (c == ' ' || c == '-') {
-          lineBuffer_.insert(lineBuffer_.end(), wordBuffer_.begin(), wordBuffer_.end());
+          lineBuffer_ += wordBuffer_;
           currLineWidth_ = projectedWidth;
           wordBuffer_.clear();
       }
   }
 
   // Flush remaining text
-  lineBuffer_.insert(lineBuffer_.end(), wordBuffer_.begin(), wordBuffer_.end());
+  lineBuffer_ += wordBuffer_;
   wordBuffer_.clear();
   if (!lineBuffer_.empty()) flushLine();
 }
-
 
 void Epson::printText(const char *str)
 {
