@@ -631,7 +631,7 @@ void Epson::printTextWrap(const char* str) {
       // Check if adding this word exceeds line width
       uint8_t projectedWidth = currLineWidth;
       for (char wc : wordBuffer) {
-          projectedWidth += glyphWidth(); // per char
+          projectedWidth += glyphWidth(currentTextMode); // per char
       }
 
       if (projectedWidth > lineSlots) {
@@ -645,7 +645,7 @@ void Epson::printTextWrap(const char* str) {
               std::string remainder = lineBuffer.substr(wrapPos) + wordBuffer;
               lineBuffer = remainder;
               currLineWidth = 0;
-              for (char rc : lineBuffer) currLineWidth += glyphWidth();
+              for (char rc : lineBuffer) currLineWidth += glyphWidth(currentTextMode);
 
               wordBuffer.clear();
               lastSpaceIndex = std::string::npos;
@@ -658,7 +658,7 @@ void Epson::printTextWrap(const char* str) {
               printText("\r\n");
               lineBuffer = wordBuffer;
               currLineWidth = 0;
-              for (char wc : lineBuffer) currLineWidth += glyphWidth();
+              for (char wc : lineBuffer) currLineWidth += glyphWidth(currentTextMode);
               wordBuffer.clear();
               lastSpaceIndex = std::string::npos;
           }
