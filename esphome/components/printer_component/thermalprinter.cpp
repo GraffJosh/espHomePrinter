@@ -718,33 +718,36 @@ void Epson::execute_token(std::string token)
 
 void Epson::printTextWrap(const std::string &text) {
   const uint8_t lineSlots = 42; // normal line width
+
   static std::string lineBuffer;        // current line
   static std::string wordBuffer;        // current word
   static uint8_t currLineWidth = 0;     // current width of line
   static size_t lastSpaceIndex = std::string::npos;
 
-  // --- Escape parsing state ---
+  // Escape parsing state
   static bool parsing_escape = false;
   static bool maybe_escape = false;
   static std::string escape_buffer;
 
-  // Helper: flush line buffer to printer
+  // Flush line buffer safely
   auto flushLine = [&]() {
       if (!lineBuffer.empty()) {
           printText(lineBuffer.c_str());
+          // printText("\r\n");
+
+          // Clear buffers and reset state
           lineBuffer.clear();
+          wordBuffer.clear();
           currLineWidth = 0;
           lastSpaceIndex = std::string::npos;
       }
   };
 
-
-  // --- Process each character ---
   for (char c : text) {
       // --- Handle escape sequences ---
       if (parsing_escape) {
           if (c == '}') {
-              execute_token(escape_buffer); // apply {token} or {/token}
+              execute_token(escape_buffer);
               escape_buffer.clear();
               parsing_escape = false;
           } else {
@@ -756,7 +759,7 @@ void Epson::printTextWrap(const std::string &text) {
       // Possible start of escape
       if (c == '{') {
           if (maybe_escape) {
-              wordBuffer += '{'; // literal {{
+              wordBuffer += '{';
               maybe_escape = false;
           } else {
               maybe_escape = true;
@@ -772,12 +775,11 @@ void Epson::printTextWrap(const std::string &text) {
           continue;
       }
 
-      // Explicit newline: just pass it through
+      // Explicit newline
       if (c == '\n') {
           wordBuffer += c;
           lineBuffer += wordBuffer;
           flushLine();
-          wordBuffer.clear();
           continue;
       }
 
@@ -787,42 +789,35 @@ void Epson::printTextWrap(const std::string &text) {
       // Track last space/hyphen for wrapping
       if (c == ' ' || c == '-') lastSpaceIndex = lineBuffer.size() + wordBuffer.size() - 1;
 
-      // --- Word wrapping ---
       uint8_t projectedWidth = currLineWidth + glyphWidth(wordBuffer);
 
-      if (projectedWidth > lineSlots) {
-          if (lastSpaceIndex != std::string::npos) {
-              // Wrap at last space
-              size_t wrapPos = lastSpaceIndex + 1;
-              printText(lineBuffer.substr(0, wrapPos).c_str());
-              printText("\r\n");
+      // --- Word wrapping ---
+      if (projectedWidth > lineSlots && lastSpaceIndex != std::string::npos) {
+          // Wrap at last space
+          size_t wrapPos = lastSpaceIndex + 1;
+          printText(lineBuffer.substr(0, wrapPos).c_str());
+          printText("\r\n");
 
-              std::string remainder = lineBuffer.substr(wrapPos) + wordBuffer;
-              lineBuffer = remainder;
+          std::string remainder = lineBuffer.substr(wrapPos) + wordBuffer;
+          lineBuffer = remainder;
+          currLineWidth = glyphWidth(lineBuffer);
+          wordBuffer.clear();
 
-              currLineWidth = glyphWidth(lineBuffer);
-              wordBuffer.clear();
-              lastSpaceIndex = std::string::npos;
-              for (size_t j = 0; j < lineBuffer.size(); ++j)
-                  if (lineBuffer[j] == ' ' || lineBuffer[j] == '-') lastSpaceIndex = j;
-          } else {
-              // Force wrap at current char
-              printText(lineBuffer.c_str());
-              printText("\r\n");
-              lineBuffer = wordBuffer;
-              currLineWidth = glyphWidth(lineBuffer);
-              wordBuffer.clear();
-              lastSpaceIndex = std::string::npos;
-          }
-      } else if (c == ' ' || c == '-') {
-          // Word fits: flush it to line buffer
+          // Recompute last space in remainder
+          lastSpaceIndex = std::string::npos;
+          for (size_t j = 0; j < lineBuffer.size(); ++j)
+              if (lineBuffer[j] == ' ' || lineBuffer[j] == '-') lastSpaceIndex = j;
+      }
+      else if (c == ' ' || c == '-') {
+          // Word fits: flush to line
           lineBuffer += wordBuffer;
           currLineWidth = projectedWidth;
           wordBuffer.clear();
       }
+      // If projectedWidth > lineSlots and no space exists, do nothing — printer handles long words
   }
 
-  // Flush remaining text
+  // Flush any remaining text at end
   lineBuffer += wordBuffer;
   if (!lineBuffer.empty()) flushLine();
 }
