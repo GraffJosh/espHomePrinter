@@ -581,12 +581,12 @@ void Epson::speed(int inSpeed)
     Epson::write((uint8_t) inSpeed);
 }
 
-inline uint8_t glyphWidth() {
+inline uint8_t glyphWidth(GlyphType textMode) {
   uint8_t width = 1;
 
-  if (currentTextMode & GlyphType::DoubleWidth) width *= 2; // double width
-  // if (currentTextMode & GlyphType::DoubleHeight) width *= 1.5; // double height (affects width too if doubleSize)
-  if (currentTextMode & GlyphType::Small) width = 1;  // small font (Font B)
+  if (textMode & GlyphType::DoubleWidth) width *= 2; // double width
+  // if (textMode & GlyphType::DoubleHeight) width *= 1.5; // double height (affects width too if doubleSize)
+  if (textMode & GlyphType::Small) width = 1;  // small font (Font B)
   
   return width;
 }
@@ -605,7 +605,7 @@ void Epson::printTextWrap(const char* str) {
       uint8_t out = unicode_to_cp437(cp);
       char c = (char)out;
 
-      uint8_t w = glyphWidth(); // width of this character
+      uint8_t w = glyphWidth(currentTextMode); // width of this character
 
       // Handle explicit newline
       if (c == '\n') {

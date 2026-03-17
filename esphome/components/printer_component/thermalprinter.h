@@ -55,6 +55,9 @@ inline GlyphType& operator&=(GlyphType& a, GlyphType b) {
     a = a & b;
     return a;
 }
+inline GlyphType& operator~(GlyphType& g) {
+    return static_cast<GlyphType>(~static_cast<uint8_t>(g));
+}
 
 static std::vector<AsyncClient*> clients; // a list to hold all clients
 
