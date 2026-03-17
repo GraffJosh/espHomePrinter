@@ -584,9 +584,9 @@ void Epson::speed(int inSpeed)
 inline uint8_t glyphWidth(GlyphType textMode) {
   uint8_t width = 1;
 
-  if (textMode & GlyphType::DoubleWidth) width *= 2; // double width
-  // if (textMode & GlyphType::DoubleHeight) width *= 1.5; // double height (affects width too if doubleSize)
-  if (textMode & GlyphType::Small) width = 1;  // small font (Font B)
+  if (hasFlag(textMode, GlyphType::DoubleWidth)) width *= 2; // double width
+  // if (hasFlag(textMode, GlyphType::DoubleHeight)) width *= 1.5; // double height (affects width too if doubleSize)
+  if (hasFlag(textMode, GlyphType::Small)) width = 1;  // small font (Font B)
   
   return width;
 }

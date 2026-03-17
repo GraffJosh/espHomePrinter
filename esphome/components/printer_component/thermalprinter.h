@@ -55,10 +55,12 @@ inline GlyphType& operator&=(GlyphType& a, GlyphType b) {
     a = a & b;
     return a;
 }
-inline GlyphType& operator~(GlyphType& g) {
+inline GlyphType operator~(GlyphType& g) {
     return static_cast<GlyphType>(~static_cast<uint8_t>(g));
 }
-
+inline bool hasFlag(GlyphType value, GlyphType flag) {
+  return (static_cast<uint8_t>(value) & static_cast<uint8_t>(flag)) != 0;
+}
 static std::vector<AsyncClient*> clients; // a list to hold all clients
 
 // public uart::UARTDevice, 
