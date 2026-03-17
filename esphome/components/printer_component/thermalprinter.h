@@ -25,7 +25,7 @@
 #define DEBUG_ENABLE false
 namespace esphome {
 namespace thermalprinter {
-  
+
   enum class GlyphType : uint8_t {
     Normal       = 0x00, // no formatting
     Small        = 0x01, // bit 0 = Font B
@@ -73,7 +73,7 @@ public:
   
   Epson();
   
-void printTextWrap(const char *utf8_text);
+void printTextWrap(std::string &utf8_text);
 void printText(const char *utf8_text);
 size_t write(uint8_t c);
 size_t writeBytes(const char* inData,int length);
