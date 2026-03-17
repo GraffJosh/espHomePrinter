@@ -611,7 +611,8 @@ void Epson::printTextWrap(const char* str) {
       if (c == '\n') {
           lineBuffer += wordBuffer;
           printText(lineBuffer.c_str());
-          printText("\r\n");
+          lineBuffer += c;              // append newline to buffer
+          // printText("\r\n");
           lineBuffer.clear();
           wordBuffer.clear();
           currLineWidth = 0;
