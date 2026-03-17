@@ -722,7 +722,7 @@ void Epson::printTextWrap(const std::string &text) {
   // Persistent buffers
   static std::string lineBuffer;
   static std::string wordBuffer;
-  static uint16_t currLineWidth = 0; // changed to uint16_t to avoid overflow
+  static uint16_t currLineWidth = 0; // safe for double-size
   static size_t lastSpaceIndex = std::string::npos;
 
   // Escape sequence state
@@ -802,19 +802,22 @@ void Epson::printTextWrap(const std::string &text) {
               currLineWidth = glyphWidth(lineBuffer);
               wordBuffer.clear();
 
-              // Recompute last space
+              // Recompute last space in remainder
               lastSpaceIndex = std::string::npos;
               for (size_t j = 0; j < lineBuffer.size(); ++j)
                   if (lineBuffer[j] == ' ' || lineBuffer[j] == '-') lastSpaceIndex = j;
           } else {
-              // Long word with no space — don't wrap, let printer handle
-              // Just flush existing line if needed
+              // No space in line — skip wrap, print directly
               if (!lineBuffer.empty()) {
                   printText(lineBuffer.c_str());
+                  printText("\r\n");
                   lineBuffer.clear();
-                  currLineWidth = 0;
               }
-              // Leave wordBuffer as-is
+              printText(wordBuffer.c_str());
+              printText("\r\n");
+              wordBuffer.clear();
+              currLineWidth = 0;
+              lastSpaceIndex = std::string::npos;
           }
       } else if (c == ' ' || c == '-') {
           // Word fits — flush it to line buffer
@@ -828,6 +831,7 @@ void Epson::printTextWrap(const std::string &text) {
   lineBuffer += wordBuffer;
   if (!lineBuffer.empty()) flushLine();
 }
+
 
 void Epson::printText(const char *str)
 {
