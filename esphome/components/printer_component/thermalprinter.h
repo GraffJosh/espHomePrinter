@@ -25,7 +25,10 @@
 #define DEBUG_ENABLE false
 namespace esphome {
 namespace thermalprinter {
-
+  struct CharGlyph {
+    char c;
+    GlyphType mode;
+};
   enum class GlyphType : uint8_t {
     Normal       = 0x00, // no formatting
     Small        = 0x01, // bit 0 = Font B
@@ -99,6 +102,9 @@ void italicOn();
 void italicOff();
 void smallTextOn();
 void smallTextOff();
+
+void apply_format(const std::string &token, bool enable);
+void execute_token(std::string token);
 //
 void codePage(uint8_t n);
 void fontA();
@@ -156,15 +162,26 @@ private:
 
 
   
-  std::string lineBuffer_;
-  std::string wordBuffer_;
-  uint8_t currLineWidth_;
-  size_t lastSpaceIndex_;
-  bool parsing_escape_ = false;
-  bool maybe_escape_ = false;
-  std::string escape_buffer_;
-  // HardwareSerial printerSerial;
+    std::vector<CharGlyph> lineBuffer_;
+    std::vector<CharGlyph> wordBuffer_;
+    uint8_t currLineWidth_ = 0;
+    size_t lastSpaceIndex_ = std::string::npos;
 
+    // Escape parsing state
+    bool parsing_escape_ = false;
+    bool maybe_escape_ = false;
+    std::string escape_buffer_;
+
+    uint8_t glyphWidth(GlyphType g) {
+        uint8_t w = 1;
+        if (static_cast<uint8_t>(g & GlyphType::DoubleWidth)) w *= 2;
+        if (static_cast<uint8_t>(g & GlyphType::DoubleHeight)) w *= 2;
+        if (static_cast<uint8_t>(g & GlyphType::Small)) w = 1;
+        return w;
+    }
+
+    void flushLine();
+    void printChar(const CharGlyph &cg);
 };
 
 }
