@@ -274,7 +274,7 @@ void Epson::updateTextMode(GlyphType mask, bool enable) {
     }
     Epson::write(ESC);
     Epson::write('!');
-    Epson::write(currentTextMode);
+    Epson::write((uint8_t) currentTextMode);
 }
 
 // --- ESC/POS text mode functions using updateTextMode ---
