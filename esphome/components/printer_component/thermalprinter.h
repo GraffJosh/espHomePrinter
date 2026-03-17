@@ -25,6 +25,37 @@
 #define DEBUG_ENABLE false
 namespace esphome {
 namespace thermalprinter {
+
+  enum class GlyphType : uint8_t {
+    Normal       = 0x00, // no formatting
+    Small        = 0x01, // bit 0 = Font B
+    Bold         = 0x08, // bit 3
+    Emphasized   = 0x08, // same as Bold if printer merges
+    DoubleHeight = 0x10, // bit 4
+    DoubleWidth  = 0x20, // bit 5
+    Italic       = 0x40, // bit 6
+    Underline    = 0x80  // bit 7
+};
+
+// Bitwise helpers
+inline GlyphType operator|(GlyphType a, GlyphType b) {
+    return static_cast<GlyphType>(static_cast<uint8_t>(a) | static_cast<uint8_t>(b));
+}
+
+inline GlyphType operator&(GlyphType a, GlyphType b) {
+    return static_cast<GlyphType>(static_cast<uint8_t>(a) & static_cast<uint8_t>(b));
+}
+
+inline GlyphType& operator|=(GlyphType& a, GlyphType b) {
+    a = a | b;
+    return a;
+}
+
+inline GlyphType& operator&=(GlyphType& a, GlyphType b) {
+    a = a & b;
+    return a;
+}
+
 static std::vector<AsyncClient*> clients; // a list to hold all clients
 
 // public uart::UARTDevice, 
@@ -33,7 +64,7 @@ public:
   
   Epson();
   
-  
+void printTextWrap(const char *utf8_text);
 void printText(const char *utf8_text);
 size_t write(uint8_t c);
 size_t writeBytes(const char* inData,int length);

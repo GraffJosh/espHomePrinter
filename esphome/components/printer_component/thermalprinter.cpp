@@ -279,30 +279,30 @@ void Epson::updateTextMode(uint8_t mask, bool enable) {
 
 // --- ESC/POS text mode functions using updateTextMode ---
 // Bold / Emphasized
-void Epson::boldOn()        { updateTextMode(0x08, true); }
-void Epson::boldOff()       { updateTextMode(0x08, false); }
-void Epson::emphasizedOn()  { updateTextMode(0x08, true); } // same as bold if printer merges
-void Epson::emphasizedOff() { updateTextMode(0x08, false); }
+void Epson::boldOn()        { updateTextMode(GlyphType::Bold, true); }
+void Epson::boldOff()       { updateTextMode(GlyphType::Bold, false); }
+void Epson::emphasizedOn()  { updateTextMode(GlyphType::Bold, true); } // same as bold if printer merges
+void Epson::emphasizedOff() { updateTextMode(GlyphType::Bold, false); }
 
 // Underline
-void Epson::underlineOn()   { updateTextMode(0x80, true); } // bit 7
-void Epson::underlineOff()  { updateTextMode(0x80, false); }
+void Epson::underlineOn()   { updateTextMode(GlyphType::Underline, true); } // bit 7
+void Epson::underlineOff()  { updateTextMode(GlyphType::Underline, false); }
 
 // Double height / width
-void Epson::doubleHeightOn()   { updateTextMode(0x10, true); } // bit 4
-void Epson::doubleHeightOff()  { updateTextMode(0x10, false); }
-void Epson::doubleWidthOn()    { updateTextMode(0x20, true); } // bit 5
-void Epson::doubleWidthOff()   { updateTextMode(0x20, false); }
-void Epson::doubleSizeOn()     { updateTextMode(0x10 | 0x20, true); } // bits 4+5
-void Epson::doubleSizeOff()    { updateTextMode(0x10 | 0x20, false); }
+void Epson::doubleHeightOn()   { updateTextMode(GlyphType::DoubleHeight, true); } // bit 4
+void Epson::doubleHeightOff()  { updateTextMode(GlyphType::DoubleHeight, false); }
+void Epson::doubleWidthOn()    { updateTextMode(GlyphType::DoubleWidth, true); } // bit 5
+void Epson::doubleWidthOff()   { updateTextMode(GlyphType::DoubleWidth, false); }
+void Epson::doubleSizeOn()     { updateTextMode(GlyphType::DoubleHeight | GlyphType::DoubleWidth, true); } // bits 4+5
+void Epson::doubleSizeOff()    { updateTextMode(GlyphType::DoubleHeight | GlyphType::DoubleWidth, false); }
 
 // Italic (if supported)
-void Epson::italicOn()        { updateTextMode(0x40, true); }  // bit 6
-void Epson::italicOff()       { updateTextMode(0x40, false); }
+void Epson::italicOn()        { updateTextMode(GlyphType::Italic, true); }  // bit 6
+void Epson::italicOff()       { updateTextMode(GlyphType::Italic, false); }
 
 // Small text (some printers use Font B bit)
-void Epson::smallTextOn()     { updateTextMode(0x01, true); }  // bit 0 = Font B
-void Epson::smallTextOff()    { updateTextMode(0x01, false); }
+void Epson::smallTextOn()     { updateTextMode(GlyphType::Small, true); }  // bit 0 = Font B
+void Epson::smallTextOff()    { updateTextMode(GlyphType::Small, false); }
 
 void Epson::codePage(uint8_t n) {
   Epson::write(ESC);   // ESC
@@ -580,6 +580,100 @@ void Epson::speed(int inSpeed)
     }
     Epson::write((uint8_t) inSpeed);
 }
+
+inline uint8_t glyphWidth() {
+  uint8_t width = 1;
+
+  if (currentTextMode & GlyphType::DoubleWidth) width *= 2; // double width
+  // if (currentTextMode & GlyphType::DoubleHeight) width *= 1.5; // double height (affects width too if doubleSize)
+  if (currentTextMode & GlyphType::Small) width = 1;  // small font (Font B)
+  
+  return width;
+}
+
+
+void Epson::printTextWrap(const char* str) {
+  std::string lineBuffer;        // Current line buffer
+  std::string wordBuffer;        // Current word buffer
+  uint8_t currLineWidth = 0;     // Width of line so far in character slots
+  uint8_t lineSlots = 42;        // Normal line width in slots
+  size_t lastSpaceIndex = std::string::npos; // Last space/hyphen in lineBuffer
+
+  while (*str) {
+      const char* prev = str;
+      uint32_t cp = decode_utf8(str);
+      uint8_t out = unicode_to_cp437(cp);
+      char c = (char)out;
+
+      uint8_t w = glyphWidth(); // width of this character
+
+      // Handle explicit newline
+      if (c == '\n') {
+          lineBuffer += wordBuffer;
+          printText(lineBuffer.c_str());
+          printText("\r\n");
+          lineBuffer.clear();
+          wordBuffer.clear();
+          currLineWidth = 0;
+          lastSpaceIndex = std::string::npos;
+          continue;
+      }
+
+      // Append to current word
+      wordBuffer += c;
+
+      // Update last space/hyphen position
+      if (c == ' ' || c == '-') {
+          lastSpaceIndex = lineBuffer.size() + wordBuffer.size() - 1;
+      }
+
+      // Check if adding this word exceeds line width
+      uint8_t projectedWidth = currLineWidth;
+      for (char wc : wordBuffer) {
+          projectedWidth += glyphWidth(); // per char
+      }
+
+      if (projectedWidth > lineSlots) {
+          if (lastSpaceIndex != std::string::npos) {
+              // Wrap at last space
+              size_t wrapPos = lastSpaceIndex + 1;
+              printText(lineBuffer.substr(0, wrapPos).c_str());
+              printText("\r\n");
+
+              // Move remaining to new line
+              std::string remainder = lineBuffer.substr(wrapPos) + wordBuffer;
+              lineBuffer = remainder;
+              currLineWidth = 0;
+              for (char rc : lineBuffer) currLineWidth += glyphWidth();
+
+              wordBuffer.clear();
+              lastSpaceIndex = std::string::npos;
+              for (size_t i = 0; i < lineBuffer.size(); i++) {
+                  if (lineBuffer[i] == ' ' || lineBuffer[i] == '-') lastSpaceIndex = i;
+              }
+          } else {
+              // No space found, force wrap at current char
+              printText(lineBuffer.c_str());
+              printText("\r\n");
+              lineBuffer = wordBuffer;
+              currLineWidth = 0;
+              for (char wc : lineBuffer) currLineWidth += glyphWidth();
+              wordBuffer.clear();
+              lastSpaceIndex = std::string::npos;
+          }
+      } else if (c == ' ' || c == '-') {
+          // Safe to flush word
+          lineBuffer += wordBuffer;
+          currLineWidth = projectedWidth;
+          wordBuffer.clear();
+      }
+  }
+
+  // Flush remaining buffers
+  lineBuffer += wordBuffer;
+  if (!lineBuffer.empty()) printText(lineBuffer.c_str());
+}
+
 
 void Epson::printText(const char *str)
 {
