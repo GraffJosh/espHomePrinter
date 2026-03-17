@@ -266,7 +266,7 @@ void Epson::characterSet(uint8_t n){
 }
 
 // Helper: update a single bit in currentMode and send ESC ! n
-void Epson::updateTextMode(uint8_t mask, bool enable) {
+void Epson::updateTextMode(GlyphType mask, bool enable) {
     if (enable) {
         currentTextMode |= mask;
     } else {

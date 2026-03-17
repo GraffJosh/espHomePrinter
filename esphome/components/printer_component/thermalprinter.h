@@ -77,7 +77,7 @@ int getStatus();
 void characterSet(uint8_t n);
 void defaultLineSpacing();
 //Text Mode Functions
-void updateTextMode(uint8_t mask, bool enable);
+void updateTextMode(GlyphType mask, bool enable);
 void boldOn();
 void boldOff();
 void emphasizedOn();
