@@ -404,6 +404,32 @@ void Epson::justifyRight() {
   Epson::write(0x61);    
   Epson::write(2);
 }
+
+void Epson::defineGlyph(uint8_t code, const uint8_t bitmap[], uint8_t height){
+  Epson::write(0x1B);  // ESC
+  Epson::write('&');   // '&'
+  Epson::write(code);  // character code
+  Epson::write(height - 1); // m = vertical bytes per column minus 1
+
+  // send bitmap data
+  for (int i = 0; i < height * 8; i++){ // 8 bytes per row (for width=8)
+      Epson::write(bitmap[i]);
+  }
+}
+void Epson::printCustomGlyph(uint8_t code){
+  // enable
+  Epson::write(0x1B);
+  Epson::write('%');
+  Epson::write(1);
+
+  Epson::write(code);
+
+  // disable
+  Epson::write(0x1B);
+  Epson::write('%');
+  Epson::write(0);
+}
+
 //n range 1-255
 void Epson::barcodeHeight(uint8_t n) {
   Epson::write(GS);  
