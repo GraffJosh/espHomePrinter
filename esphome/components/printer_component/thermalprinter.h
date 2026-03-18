@@ -123,6 +123,7 @@ void reverseOn();
 void justifyLeft();
 void justifyCenter();
 void justifyRight();
+void define8x8Glyph(uint8_t code, const char* bitmapLines[8]);
 void defineGlyph(uint8_t code, const uint8_t bitmap[], uint8_t height);
 void printCustomGlyph(uint8_t code);
 void barcodeHeight(uint8_t n);

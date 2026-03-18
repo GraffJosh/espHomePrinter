@@ -404,16 +404,44 @@ void Epson::justifyRight() {
   Epson::write(0x61);    
   Epson::write(2);
 }
+// bitmapLines: array of strings, each string = 8 chars, 'X' = dot on, ' ' = dot off
+void Epson::define8x8Glyph(uint8_t code, const char* bitmapLines[8]) {
+    uint8_t bitmap[8]; // 8 vertical bytes
 
-void Epson::defineGlyph(uint8_t code, const uint8_t bitmap[], uint8_t height){
+    for (int col = 0; col < 8; col++) {
+        bitmap[col] = 0;
+        for (int row = 0; row < 8; row++) {
+            if (bitmapLines[row][col] == 'X') {
+                bitmap[col] |= (1 << row); // set vertical bit
+            }
+        }
+    }
+
+    // Send ESC & command
+    Epson::write(0x1B);  // ESC
+    Epson::write('&');   // '&'
+    Epson::write(code);  // character code
+    Epson::write(0);     // m = vertical bytes per column minus 1 (8 pixels = 1 byte → 1-1=0)
+
+    // send bitmap column-major
+    for (int i = 0; i < 8; i++) {
+        Epson::write(bitmap[i]);
+    }
+}
+void Epson::defineGlyph(uint8_t code, const uint8_t* bitmap, uint8_t width, uint8_t height){
+  uint8_t vertical_bytes = (height + 7) / 8;
+
   Epson::write(0x1B);  // ESC
   Epson::write('&');   // '&'
   Epson::write(code);  // character code
-  Epson::write(height - 1); // m = vertical bytes per column minus 1
+  Epson::write(vertical_bytes - 1); // m = vertical bytes per column - 1
 
-  // send bitmap data
-  for (int i = 0; i < height * 8; i++){ // 8 bytes per row (for width=8)
-      Epson::write(bitmap[i]);
+  // Send column-major bitmap
+  for (uint8_t x = 0; x < width; x++){
+      for (uint8_t y = 0; y < vertical_bytes; y++){
+          // Each byte = 8 vertical dots in this column
+          Epson::write(bitmap[y*width + x]);
+      }
   }
 }
 void Epson::printCustomGlyph(uint8_t code){
