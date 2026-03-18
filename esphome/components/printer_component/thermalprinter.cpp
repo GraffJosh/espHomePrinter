@@ -189,8 +189,25 @@ int Epson::getStatus(){
   int result;
   return result;
 }
+int Epson::getPaperStatus(){
+  Epson::write(0x10);
+  Epson::write(0x04);
+  Epson::write(4);
 
-// int Epson::read(){
+  unsigned long start = millis();
+  while (!Serial1.available()) {
+    if (millis() - start > 100) return -1; // timeout
+  }
+
+  return Serial1.read();
+}
+void Epson::beep(){
+  Epson::write(0x10); // DLE
+  Epson::write(0x14); // DC4
+  Epson::write(3);    // fn=3
+}
+
+// int Epson::readSerial(){
 //     int result;
 //     result = Serial1.read();
 //     return result;
@@ -284,10 +301,6 @@ void Epson::boldOff()       { updateTextMode(GlyphType::Bold, false); }
 void Epson::emphasizedOn()  { updateTextMode(GlyphType::Bold, true); } // same as bold if printer merges
 void Epson::emphasizedOff() { updateTextMode(GlyphType::Bold, false); }
 
-// Underline
-void Epson::underlineOn()   { updateTextMode(GlyphType::Underline, true); } // bit 7
-void Epson::underlineOff()  { updateTextMode(GlyphType::Underline, false); }
-
 // Double height / width
 void Epson::doubleHeightOn()   { updateTextMode(GlyphType::DoubleHeight, true); } // bit 4
 void Epson::doubleHeightOff()  { updateTextMode(GlyphType::DoubleHeight, false); }
@@ -303,6 +316,45 @@ void Epson::italicOff()       { updateTextMode(GlyphType::Italic, false); }
 // Small text (some printers use Font B bit)
 void Epson::smallTextOn()     { updateTextMode(GlyphType::Small, true); }  // bit 0 = Font B
 void Epson::smallTextOff()    { updateTextMode(GlyphType::Small, false); }
+// Underline
+// void Epson::underlineOn()   { updateTextMode(GlyphType::Underline, true); } // bit 7
+// void Epson::underlineOff()  { updateTextMode(GlyphType::Underline, false); }
+
+void Epson::underlineOn(){
+  Epson::write(ESC);
+  Epson::write(0x2D); // '-'
+  Epson::write(2);    // 1 = thin, 2 = thick
+}
+
+void Epson::underlineOff(){
+  Epson::write(ESC);
+  Epson::write(0x2D);
+  Epson::write(0);
+}
+
+void Epson::doubleStrikeOn(){
+  Epson::write(ESC);
+  Epson::write(0x47); // 'G'
+  Epson::write(1);
+}
+
+void Epson::doubleStrikeOff(){
+  Epson::write(ESC);
+  Epson::write(0x47);
+  Epson::write(0);
+}
+
+void Epson::upsideDownOn(){
+  Epson::write(ESC);
+  Epson::write(0x7B); // '{'
+  Epson::write(1);
+}
+
+void Epson::upsideDownOff(){
+  Epson::write(ESC);
+  Epson::write(0x7B); // '{'
+  Epson::write(0);
+}
 
 void Epson::codePage(uint8_t n) {
   Epson::write(ESC);   // ESC

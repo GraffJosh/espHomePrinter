@@ -80,6 +80,8 @@ void dump_config() override;
 void start();
 
 int getStatus();
+int getPaperStatus();
+void beep();
 void characterSet(uint8_t n);
 void defaultLineSpacing();
 //Text Mode Functions
@@ -100,7 +102,10 @@ void italicOn();
 void italicOff();
 void smallTextOn();
 void smallTextOff();
-
+void doubleStrikeOn();
+void doubleStrikeOff();
+void upsideDownOn();
+void upsideDownOff();
 uint8_t getCurrentGlyphWidth();
 void apply_format(const std::string &token, bool enable);
 void execute_token(std::string token);
