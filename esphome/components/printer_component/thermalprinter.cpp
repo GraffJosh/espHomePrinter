@@ -506,7 +506,10 @@ void Epson::printQRCode(const std::string &text, uint8_t size) {
   Epson::write(size);
 
   // ---- Set Error Correction (M = 15%) ----
-  Epson::writeBytes("\x1D\x28\x6B\x03\x00\x31\x45\x31", 8);
+  //L: 0x30
+  //M: 0x31
+  //Q: 0x32
+  Epson::writeBytes("\x1D\x28\x6B\x03\x00\x31\x45\x30", 8);
 
   // ---- Store Data in QR Buffer ----
   uint16_t store_len = len + 3;
