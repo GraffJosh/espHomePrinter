@@ -612,6 +612,45 @@ void Epson::finishImage()
 {
   Epson::write(12);
 }
+void Epson::printImageRaster(const char* line_buffer, const int line_length, const bool highDensity)
+{
+  // In raster mode:
+  // width is in BYTES (8 pixels per byte)
+  int width_bytes = line_length;
+
+
+  uint8_t xL = width_bytes & 0xFF;
+  uint8_t xH = width_bytes >> 8;
+
+  // Height = number of rows in this chunk
+  // We’ll treat this as 1 row unless you batch rows
+  uint16_t height = 1;
+
+  uint8_t yL = height & 0xFF;
+  uint8_t yH = height >> 8;
+
+  // GS v 0
+  Epson::write(29); // GS
+  Epson::write(118); // v
+  Epson::write(48); // 0
+
+  // mode
+  Epson::write(highDensity ? 1 : 0);
+  // 0 = normal
+  // 1 = double width (optional, depends on your needs)
+
+  // width in bytes
+  Epson::write(xL);
+  Epson::write(xH);
+
+  // height in pixels
+  Epson::write(yL);
+  Epson::write(yH);
+
+  // write raster data
+  Epson::writeBytes(line_buffer, width_bytes * height);
+}
+
 void Epson::printImageLine(const char* line_buffer, const int line_length, const bool highDensity)
 {
   //parameters in the ESCPOS lib, these are a uint16 split in 2 denoting the 
@@ -628,12 +667,9 @@ void Epson::printImageLine(const char* line_buffer, const int line_length, const
   uint8_t nH = currentImageWidth >> 8;
 
   //enable unidirectional printing
-  // Epson::write(27);
-  // Epson::write(85);
-  // Epson::write(255);
   Epson::write(27);
   Epson::write(85);
-  Epson::write(1); 
+  Epson::write(255);
 
   //set line spacing ?
   Epson::write(27);
@@ -656,7 +692,7 @@ void Epson::printImageLine(const char* line_buffer, const int line_length, const
   // Epson::write(10);
   Epson::write(27); // ESC
   Epson::write(74); // J
-  Epson::write(20); // exact dot feed
+  Epson::write(24); // exact dot feed (doesn't work.)
 
   //reset the unidirectional printing
   Epson::write(27);
