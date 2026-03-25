@@ -612,42 +612,28 @@ void Epson::finishImage()
 {
   Epson::write(12);
 }
-void Epson::printImageRaster(const char* line_buffer, const int line_length, const bool highDensity)
+void Epson::printImageRaster(const char* line_buffer, const int width_bytes, const int num_rows, const bool highDensity) 
 {
-  // In raster mode:
-  // width is in BYTES (8 pixels per byte)
-  int width_bytes = line_length;
+    uint8_t xL = width_bytes & 0xFF;
+    uint8_t xH = width_bytes >> 8;
 
-  uint8_t xL = width_bytes & 0xFF;
-  uint8_t xH = width_bytes >> 8;
+    uint16_t height = num_rows;
+    uint8_t yL = height & 0xFF;
+    uint8_t yH = height >> 8;
 
-  // Height = number of rows in this chunk
-  // We’ll treat this as 1 row unless you batch rows
-  uint16_t height = 1;
+    // GS v 0
+    Epson::write(29); // GS
+    Epson::write(118); // v
+    Epson::write(48); // 0
 
-  uint8_t yL = height & 0xFF;
-  uint8_t yH = height >> 8;
+    Epson::write(highDensity ? 1 : 0); // mode
+    Epson::write(xL);
+    Epson::write(xH);
+    Epson::write(yL);
+    Epson::write(yH);
 
-  // GS v 0
-  Epson::write(29); // GS
-  Epson::write(118); // v
-  Epson::write(48); // 
-
-  // mode
-  Epson::write(highDensity ? 1 : 0);
-  // 0 = normal
-  // 1 = double width (optional, depends on your needs)
-
-  // width in bytes
-  Epson::write(xL);
-  Epson::write(xH);
-
-  // height in pixels
-  Epson::write(yL);
-  Epson::write(yH);
-
-  // write raster data
-  Epson::writeBytes(line_buffer, width_bytes * height);
+    // write all rows in one go
+    Epson::writeBytes(line_buffer, width_bytes * num_rows);
 }
 
 void Epson::printImageLine(const char* line_buffer, const int line_length, const bool highDensity)
