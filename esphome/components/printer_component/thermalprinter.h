@@ -136,8 +136,9 @@ void printString(const char* text);
 void logWrapback(const char* text);
 int configureImagePage(const bool highDensity,const uint32_t width,const uint32_t height);
 int configureImage(const bool highDensity,const uint32_t width,const uint32_t height);
-void finishImage();
 void printImageLine(const char* line_buffer, const int line_length,const bool highDensity);
+void printImageRaster(const char* line_buffer, const int line_length,const bool highDensity);
+void finishImage();
 void printLogo(int logoNum);
 
 // void initTCP(Epson printer);
