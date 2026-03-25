@@ -628,9 +628,12 @@ void Epson::printImageLine(const char* line_buffer, const int line_length, const
   uint8_t nH = currentImageWidth >> 8;
 
   //enable unidirectional printing
+  // Epson::write(27);
+  // Epson::write(85);
+  // Epson::write(255);
   Epson::write(27);
   Epson::write(85);
-  Epson::write(255);
+  Epson::write(1); 
 
   //set line spacing ?
   Epson::write(27);
