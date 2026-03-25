@@ -635,7 +635,8 @@ void Epson::printImageLine(const char* line_buffer, const int line_length, const
   //set line spacing ?
   Epson::write(27);
   Epson::write(51);
-  Epson::write(imagePageMode ? 24:0);
+  // Epson::write(imagePageMode ? 24:0);
+  Epson::write(24);
   
   //prepare for image
   Epson::write(27);//ESC
@@ -648,7 +649,7 @@ void Epson::printImageLine(const char* line_buffer, const int line_length, const
   Epson::writeBytes(line_buffer, current_width);
 
   //newline to kick out the buffer
-  Epson::write(13);
+  // Epson::write(13);
   Epson::write(10);
 
   //reset the unidirectional printing
