@@ -617,7 +617,6 @@ void Epson::printImageRaster(const char* line_buffer, const int line_length, con
   // In raster mode:
   // width is in BYTES (8 pixels per byte)
   int width_bytes = line_length;
-  ESP_LOGD("PRINTER","PRINT RASTER");
 
   uint8_t xL = width_bytes & 0xFF;
   uint8_t xH = width_bytes >> 8;
