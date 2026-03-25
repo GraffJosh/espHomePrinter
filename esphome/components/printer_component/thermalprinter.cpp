@@ -677,7 +677,7 @@ void Epson::printImageLine(const char* line_buffer, const int line_length, const
   // Epson::write(10);
   Epson::write(27); // ESC
   Epson::write(74); // J
-  Epson::write(24); // exact dot feed (doesn't work.)
+  Epson::write(20); // exact dot feed (doesn't work.)
 
   //reset the unidirectional printing
   Epson::write(27);
