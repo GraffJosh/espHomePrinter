@@ -632,7 +632,7 @@ void Epson::printImageRaster(const char* line_buffer, const int line_length, con
   // GS v 0
   Epson::write(29); // GS
   Epson::write(118); // v
-  Epson::write(48); // 0
+  Epson::write(48); // 
 
   // mode
   Epson::write(highDensity ? 1 : 0);
